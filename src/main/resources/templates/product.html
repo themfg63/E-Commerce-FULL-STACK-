@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Ürünler</title>
+</head>
+<body>
+<section>
+    <div class="container-fluid bg-primary p-5 mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <form>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="ch">
+                        <button class="btn btn-light text-dark ms-3 col-md-2"><i class="fa-solid fa-magnifying-glass"></i>ARA </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mt-1">
+        <div class="row">
+            <div class="col-md-2 p-0">
+                <div class="card shadow-sm p-0 mb-5 bg-body-tertiary rounded">
+                    <div class="card-body">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                                Kategoriler
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">Elektronik</a>
+                            <a href="#" class="list-group-item list-group-item-action">Moda</a>
+                            <a href="#" class="list-group-item list-group-item-action">Spor, Outdoor</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="card shadow-sm p-3 mb-5 bg-body-tertiary rounded">
+                    <div class="card-body">
+                        <p class="fs-3 text-center">Ürünler</p>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <img alt="" src="img/ürünler/ürün1.jpeg" width="100%" height="150px">
+                                        <p class="fs-5 text-center">HP Laptop</p>
+                                        <div class="row text-center">
+                                            <p class="fs-6 fw-bold">12.000 TL <span class="fs-6 text-success">Sepette %10 İndirim</span> </p>
+                                            <a href="/product" class="btn btn-primary col-md-6 offset-md-3">Detaylı İncele</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <img alt="" src="/img/ürünler/ürün2.jpeg" width="100%" height="150px">
+                                        <p class="fs-5 text-center">İphone</p>
+                                        <div class="row text-center">
+                                            <p class="fs-6 fw-bold">
+                                                42.000 TL <span class="fs-6 text-success">Sepette %5 indirim</span>
+                                            </p>
+                                            <a href="/product" class="btn btn-primary col-md-6 offset-md-3">Detaylı İncele</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

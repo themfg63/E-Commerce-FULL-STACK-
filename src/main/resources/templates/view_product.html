@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Ürün Detayı</title>
+</head>
+<body>
+<section>
+    <div class="container card-sh" style="margin-top: 70px; margin-bottom: 100px">
+        <div class="col-md-12 p-5">
+            <div class="row">
+                <div class="col-md-6 text-end">
+                    <img alt="" src="/img/ürünler/ürün1.jpeg" width="330px" height="400px">
+                </div>
+                <div class="col-md-6">
+                    <p class="fs-3">Laptop</p>
+                    <p>
+                        <span class="fw-bold">Açıklama: </span><br> HP Laptop, 256GB SSD, 8GB RAM
+                    </p>
+                    <p>
+                        <span class="fw-bold">Ürün Detayı:</span><br>Status:
+                        <span class="badge bg-success">Stokta Mevcut</span>
+                        <span class="badge bg-danger">Stokta Yok</span><br>
+                        Kategori: Laptop <br>
+                        7 Gün İçerisinde İade ve Değişim Hakkı
+                    </p>
+                    <p class="fs-5 fw-bold">
+                        Fiyat: &nbsp; &nbsp; &nbsp; &nbsp;
+                        12.000 &#8378;
+                        <span class="fs-6 text-decoration-line-through text-secondary">15.000 &#8378;</span>
+                        <span class="fs-6 text-success">%20 İndirimli Fiyat</span>
+                    </p>
+                    <div class="row">
+                        <div class="col-md-4 text-warning text-center p-2">
+                            <i class="fas fa-money-bill-wave fa-2x"></i>
+                            <p>Kapıda Ödeme Seçeneği</p>
+                        </div>
+                        <div class="col-md-4 text-danger text-center p-2">
+                            <i class="fas fa-undo-alt fa-2x"></i>
+                            <p>İade Etme Hakkı</p>
+                        </div>
+                        <div class="col-md-4 text-primary text-center p-2">
+                            <i class="fas fa-truck-moving fa-2x"></i>
+                            <p>Ücretsiz Kargo</p>
+                        </div>
+                    </div>
+                    <a href="login.jsp" class="btn btn-success  col-md-12">Sepete Ekle</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

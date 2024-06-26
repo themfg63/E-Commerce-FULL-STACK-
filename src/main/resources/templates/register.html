@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>register</title>
+</head>
+<body>
+    <section>
+        <div class="container mt-5 p-5">
+            <div class="row">
+                <div class="col-md-4 p-5">
+                    <img src="img/ecom.png" alt="" width="100%" height="400px">
+                </div>
+                <div class="col-md-8 p-5">
+                    <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+                        <div class="card-header">
+                            <p class="fs-4 text-center">Kayıt Ol</p>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">Ad Soyad</label>
+                                        <input class="form-control" name="name" type="text" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Telefon Numarası</label>
+                                        <input class="form-control" name="telNo" type="number" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">E-Mail</label>
+                                        <input class="form-control" name="email" type="email" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">Adres</label>
+                                        <input class="form-control" name="address" type="text" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Şehir</label>
+                                        <input class="form-control" name="city" type="text">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">Ülke</label>
+                                        <input class="form-control" name="state" type="text">
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Posta Kodu</label>
+                                        <input class="form-control" name="pincode" type="number">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">Şifre</label>
+                                        <input class="form-control" name="password" type="password">
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">Şifre Tekrar</label>
+                                        <input class="form-control" name="cpassword" type="password">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Profil Fotoğrafı</label>
+                                    <input class="form-control" name="profile_image" type="file">
+                                </div>
+                                <button type="submit" class="btn bg-primary text-white col-md-12">KAYDOL</button>
+                            </form>
+                        </div>
+                        <div class="card-footer text-center">
+                            Zaten Hesabınız Var Mı? <a href="/login" class="text-decoration-none">Tıkla</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
