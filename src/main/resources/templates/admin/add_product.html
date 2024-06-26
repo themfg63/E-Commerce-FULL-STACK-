@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Ürün Ekle</title>
+</head>
+<body>
+<section>
+    <div class="container p-5 mt-3">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card card-sh">
+                    <div class="card-header text-center fs-4">Ürün Ekle</div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label>Ürün Adı</label>
+                                <input type="text" name="title" class="form-control">
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Ürün Açıklaması</label>
+                                <textarea rows="3" cols="" class="form-control"> </textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Kategori</label>
+                                <select class="form-control">
+                                    <option>--Kategori Seç---</option>
+                                    <option>Elektronik</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Fiyat</label>
+                                <input type="number" name="price" class="form-control">
+                            </div>
+
+                            <div class="row">
+                                <div class="mb-3 col">
+                                    <label>Stok Adeti</label>
+                                    <input type="text" name="stock" class="form-control">
+                                </div>
+
+                                <div class="mb-3 col">
+                                    <label>Ürün Fotoğrafı</label>
+                                    <input type="file" class="form-control">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary col-md-12">EKLE</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

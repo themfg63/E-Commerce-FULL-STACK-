@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Kategoriler</title>
+</head>
+<body>
+<section>
+    <div class="container-fluid p-5 mt-5">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card card-sh">
+                    <div class="card-header text-center fs-4">Kategori Ekle</div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label>Kategori Adı</label>
+                                <input type="text" class="form-control">
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Kategori Fotoğrafı</label>
+                                <input type="file" class="form-control">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="card card-sh">
+                    <div class="card-header text-center fs-4">Kategori Detayları</div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Kategori ID</th>
+                                <th scope="col">Kategori Adı</th>
+                                <th scope="col">Kategori Fotoğrafı</th>
+                                <th scope="col">İşlem</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
