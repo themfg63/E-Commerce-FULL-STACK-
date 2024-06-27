@@ -1,7 +1,9 @@
 package com.TheMFG.E_Commerce.controller;
 
 import com.TheMFG.E_Commerce.model.Category;
+import com.TheMFG.E_Commerce.model.Product;
 import com.TheMFG.E_Commerce.service.Interface.CategoryService;
+import com.TheMFG.E_Commerce.service.Interface.ProductService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -17,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -24,13 +27,18 @@ public class AdminController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private ProductService productService;
+
     @GetMapping("/")
     public String index(){
         return "admin/index";
     }
 
     @GetMapping("/loadAddProduct")
-    public String loadAddProduct(){
+    public String loadAddProduct(Model model){
+        List<Category> categories = categoryService.getAllCategory();
+        model.addAttribute("categories",categories);
         return "admin/add_product";
     }
 
@@ -114,5 +122,26 @@ public class AdminController {
         }
 
         return "redirect:/admin/loadEditCategory/"+category.getId() ;
+    }
+
+    @PostMapping("/saveProduct")
+    public String saveProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile image,HttpSession session) throws IOException{
+        String imageName = image.isEmpty() ? "default.jpg" : image.getOriginalFilename();
+        product.setImage(imageName);
+
+        Product saveProduct = productService.saveProduct(product);
+
+        if(!ObjectUtils.isEmpty(saveProduct)){
+            File saveFile = new ClassPathResource("static/img").getFile();
+            Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "ürünler" + File.separator + image.getOriginalFilename());
+            System.out.println(path);
+            Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+            session.setAttribute("succMsg","Ürün Kaydedildi");
+        }else{
+            session.setAttribute("errorMsg","Beklenmedik bir hata oluştu");
+        }
+
+        return "redirect:/admin/loadAddProduct";
     }
 }
