@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Ürün Ekle</title>
+</head>
+<body>
+<section>
+    <div class="container p-5 mt-3">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card card-sh">
+                    <div class="card-header text-center">
+                        <p class="fs-4">Ürün Düzenle</p>
+                        <th:block th:if="${session.succMsg}">
+                            <p class="text-success fw-bold">[[${session.succMsg}]]</p>
+                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+
+                        <th:block th:if="${session.errorMsg}">
+                            <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
+                            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+                    </div>
+                    <div class="card-body">
+                        <form action="/admin/updateProduct" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="id" th:value="${product.id}">
+                            <div class="mb-3">
+                                <label>Ürün Adı</label>
+                                <input type="text" name="title" class="form-control" th:value="${product.title}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Ürün Açıklaması</label>
+                                <textarea rows="3" cols="" class="form-control" name="description">[[${product.description}]]</textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Kategori</label>
+                                <select class="form-control" name="category">
+                                    <option>[[${product.category}]]</option>
+                                    <option th:each="c:${categories}">[[${c.name}]]</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Fiyat</label>
+                                <input type="number" name="price" class="form-control" th:value="${product.price}">
+                            </div>
+
+                            <div class="row">
+                                <div class="mb-3 col">
+                                    <label>Stok Adeti</label>
+                                    <input type="text" name="stock" class="form-control" th:value="${product.stock}">
+                                </div>
+
+                                <div class="mb-3 col">
+                                    <label>Ürün Fotoğrafı</label>
+                                    <input type="file" class="form-control" name="file">
+                                </div>
+                                <div class="text-center">
+                                    <img th:src="@{'/img/ürünler/'+${product.image}}" width="100px" height="100px">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary col-md-12">Düzenle/Kaydet</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
