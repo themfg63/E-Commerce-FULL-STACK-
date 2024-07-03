@@ -126,15 +126,18 @@ public class AdminController {
 
     @PostMapping("/saveProduct")
     public String saveProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile image,HttpSession session) throws IOException{
-        String imageName = image.isEmpty() ? "default.jpg" : image.getOriginalFilename();
-        product.setImage(imageName);
 
+        String imageName = image.isEmpty() ? "default.jpg" : image.getOriginalFilename();
+
+        product.setImage(imageName);
+        product.setDiscount(0);
+        product.setDiscountPrice(product.getPrice());
         Product saveProduct = productService.saveProduct(product);
 
         if(!ObjectUtils.isEmpty(saveProduct)){
             File saveFile = new ClassPathResource("static/img").getFile();
             Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "ürünler" + File.separator + image.getOriginalFilename());
-            System.out.println(path);
+            //System.out.println(path);
             Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
             session.setAttribute("succMsg","Ürün Kaydedildi");
@@ -171,11 +174,17 @@ public class AdminController {
 
     @PostMapping("/updateProduct")
     public String updateProduct(@ModelAttribute Product product,@RequestParam("file") MultipartFile image, HttpSession session,Model m){
-        Product updateProduct = productService.updateProduct(product,image);
-        if(!ObjectUtils.isEmpty(updateProduct)){
-            session.setAttribute("succMsg","Ürün Güncellendi");
+
+        if(product.getDiscount() < 0 || product.getDiscount() > 100){
+            session.setAttribute("errorMsg","Geçersiz İndirim Oranı!");
         }else{
-            session.setAttribute("errorMsg","Bir Hata Oluştu!");
+            Product updateProduct = productService.updateProduct(product,image);
+
+            if(!ObjectUtils.isEmpty(updateProduct)){
+                session.setAttribute("succMsg","Ürün Kaydedildi");
+            }else{
+                session.setAttribute("errorMsg","Beklenmedik Bir Hata Oluştu");
+            }
         }
         return "redirect:/admin/editProduct/" + product.getId();
     }

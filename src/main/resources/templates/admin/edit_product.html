@@ -8,7 +8,7 @@
 <section>
     <div class="container p-5 mt-3">
         <div class="row">
-            <div class="col-md-6 offset-md-3">
+            <div class="col-md-8 offset-md-2">
                 <div class="card card-sh">
                     <div class="card-header text-center">
                         <p class="fs-4">Ürün Düzenle</p>
@@ -26,36 +26,49 @@
                         <form action="/admin/updateProduct" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="id" th:value="${product.id}">
                             <div class="mb-3">
-                                <label>Ürün Adı</label>
+                                <label class="fw-bold">Ürün Adı</label>
                                 <input type="text" name="title" class="form-control" th:value="${product.title}">
                             </div>
 
                             <div class="mb-3">
-                                <label>Ürün Açıklaması</label>
+                                <label class="fw-bold">Ürün Açıklaması</label>
                                 <textarea rows="3" cols="" class="form-control" name="description">[[${product.description}]]</textarea>
                             </div>
 
-                            <div class="mb-3">
-                                <label>Kategori</label>
-                                <select class="form-control" name="category">
-                                    <option>[[${product.category}]]</option>
-                                    <option th:each="c:${categories}">[[${c.name}]]</option>
-                                </select>
-                            </div>
+                            <div class="row">
+                                <div class="mb-3">
+                                    <label class="fw-bold">Kategori</label>
+                                    <select class="form-control" name="category">
+                                        <option>[[${product.category}]]</option>
+                                        <option th:each="c:${categories}">[[${c.name}]]</option>
+                                    </select>
+                                </div>
 
-                            <div class="mb-3">
-                                <label>Fiyat</label>
-                                <input type="number" name="price" class="form-control" th:value="${product.price}">
+                                <div class="mb-3 col">
+                                    <label class="fw-bold">Fiyat</label>
+                                    <input type="number" name="price" class="form-control" th:value="${product.price}">
+                                </div>
                             </div>
 
                             <div class="row">
                                 <div class="mb-3 col">
-                                    <label>Stok Adeti</label>
+                                    <label class="fw-bold">İndirim Oranı</label>
+                                    <input type="number" name="discount" th:value="${product.discount}" class="form-control">
+                                </div>
+                                <div class="mb-3 col">
+                                    <label class="fw-bold">İndirimli Fiyat</label>
+                                    <input type="number" th:value="${product.discountPrice}" class="form-control" readonly>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="mb-3 col">
+                                    <label class="fw-bold">Stok Adeti</label>
                                     <input type="text" name="stock" class="form-control" th:value="${product.stock}">
                                 </div>
 
                                 <div class="mb-3 col">
-                                    <label>Ürün Fotoğrafı</label>
+                                    <label class="fw-bold">Ürün Fotoğrafı</label>
                                     <input type="file" class="form-control" name="file">
                                 </div>
                                 <div class="text-center">
