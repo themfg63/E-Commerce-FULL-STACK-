@@ -15,56 +15,65 @@
                     <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
                         <div class="card-header">
                             <p class="fs-4 text-center">Kayıt Ol</p>
+                            <th:block th:if="${session.succMsg}">
+                                <p class="text-success fw-bold">[[${session.succMsg}]]</p>
+                                <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                            </th:block>
+
+                            <th:block th:if="${session.errorMsg}">
+                                <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
+                                <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                            </th:block>
                         </div>
                         <div class="card-body">
-                            <form>
+                            <form action="/admin/saveProduct" method="post" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">Ad Soyad</label>
-                                        <input class="form-control" name="name" type="text" />
+                                        <input class="form-control" name="name" type="text" required/>
                                     </div>
                                     <div class="col">
                                         <label class="form-label">Telefon Numarası</label>
-                                        <input class="form-control" name="telNo" type="number" />
+                                        <input class="form-control" name="telNo" type="number" required/>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">E-Mail</label>
-                                        <input class="form-control" name="email" type="email" />
+                                        <input class="form-control" name="email" type="email" required/>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">Adres</label>
-                                        <input class="form-control" name="address" type="text" />
+                                        <input class="form-control" name="address" type="text" required/>
                                     </div>
                                     <div class="col">
                                         <label class="form-label">Şehir</label>
-                                        <input class="form-control" name="city" type="text">
+                                        <input class="form-control" name="city" type="text" required>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">Ülke</label>
-                                        <input class="form-control" name="state" type="text">
+                                        <input class="form-control" name="state" type="text" required>
                                     </div>
                                     <div class="col">
                                         <label class="form-label">Posta Kodu</label>
-                                        <input class="form-control" name="pincode" type="number">
+                                        <input class="form-control" name="pincode" type="number" required>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">Şifre</label>
-                                        <input class="form-control" name="password" type="password">
+                                        <input class="form-control" name="password" type="password" required>
                                     </div>
                                     <div class="col">
                                         <label class="form-label">Şifre Tekrar</label>
-                                        <input class="form-control" name="cpassword" type="password">
+                                        <input class="form-control" name="cpassword" type="password" required>
                                     </div>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Profil Fotoğrafı</label>
-                                    <input class="form-control" name="profile_image" type="file">
+                                    <input class="form-control" name="img " type="file">
                                 </div>
                                 <button type="submit" class="btn bg-primary text-white col-md-12">KAYDOL</button>
                             </form>

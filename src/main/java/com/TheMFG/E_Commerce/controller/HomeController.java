@@ -4,6 +4,7 @@ import com.TheMFG.E_Commerce.model.Category;
 import com.TheMFG.E_Commerce.model.Product;
 import com.TheMFG.E_Commerce.service.Interface.CategoryService;
 import com.TheMFG.E_Commerce.service.Interface.ProductService;
+import com.TheMFG.E_Commerce.service.Interface.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,6 +53,8 @@ public class HomeController {
         model.addAttribute("product",productById);
         return "view_product";
     }
+
+
 }
 
 
