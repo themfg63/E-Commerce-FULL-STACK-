@@ -27,9 +27,7 @@
                             <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
                                 Kategoriler
                             </a>
-                            <a href="#" class="list-group-item list-group-item-action">Elektronik</a>
-                            <a href="#" class="list-group-item list-group-item-action">Moda</a>
-                            <a href="#" class="list-group-item list-group-item-action">Spor, Outdoor</a>
+                            <a href="#" th:each="c:${categories}" class="list-group-item list-group-item-action">[[${c.name}]]</a>
                         </div>
                     </div>
                 </div>
@@ -39,32 +37,23 @@
                     <div class="card-body">
                         <p class="fs-3 text-center">Ürünler</p>
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-3" th:each="p:${products}">
                                 <div class="card">
                                     <div class="card-body text-center">
-                                        <img alt="" src="img/ürünler/ürün1.jpeg" width="100%" height="150px">
-                                        <p class="fs-5 text-center">HP Laptop</p>
-                                        <div class="row text-center">
-                                            <p class="fs-6 fw-bold">12.000 TL <span class="fs-6 text-success">Sepette %10 İndirim</span> </p>
+                                        <img alt="" th:src="@{'/img/ürünler/'+${p.image}}" width="100%" height="150px">
+                                        <p class="fs-5 text-center">[[${p.title}]]</p>
+                                        <div class="fs-6 fw-bold">
+                                            <span>[[${p.discountPrice}]]</span>
+                                            <br />
+                                            <span class="text-decoration-line-through text-secondary">[[${p.price}]] TL</span>
+                                            <br />
+                                            <span class="fs-6 text-success">Sepette %[[${p.discount}]] indirim.</span>
                                             <a href="/product" class="btn btn-primary col-md-6 offset-md-3">Detaylı İncele</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <img alt="" src="/img/ürünler/ürün2.jpeg" width="100%" height="150px">
-                                        <p class="fs-5 text-center">İphone</p>
-                                        <div class="row text-center">
-                                            <p class="fs-6 fw-bold">
-                                                42.000 TL <span class="fs-6 text-success">Sepette %5 indirim</span>
-                                            </p>
-                                            <a href="/product" class="btn btn-primary col-md-6 offset-md-3">Detaylı İncele</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>

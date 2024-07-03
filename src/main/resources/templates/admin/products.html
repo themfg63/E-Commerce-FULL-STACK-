@@ -31,6 +31,7 @@
                         <th scope="col">Fiyat</th>
                         <th scope="col">İndirim Oranı</th>
                         <th scope="col">İndirimli Fiyat</th>
+                        <th scope="col">Durum</th>
                         <th scope="col">Stok</th>
                         <th scope="col">İşlem</th>
                     </tr>
@@ -46,6 +47,7 @@
                         <td>[[${p.price}]]</td>
                         <td>[[${p.discount}]]</td>
                         <td>[[${p.discountPrice}]]</td>
+                        <td>[[${p.isActive}]]</td>
                         <td>[[${p.stock}]]</td>
                         <td>
                             <a th:href="@{'/admin/editProduct/'+${p.id}}" class="btn btn-primary btn-sm">
