@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -35,16 +37,21 @@ public class HomeController {
     }
 
     @GetMapping("/products")
-    public String products(Model m){
+    public String products(Model m, @RequestParam(value = "category",defaultValue = "") String category){
         List<Category> categories = categoryService.getAllActiveCategory();
-        List<Product> products = productService.getAllActiveProducts();
+        List<Product> products = productService.getAllActiveProducts(category);
         m.addAttribute("categories",categories);
         m.addAttribute("products",products);
+        m.addAttribute("paramValue",category);
         return "product";
     }
 
-    @GetMapping("/product")
-    public String product(){ return "view_product"; }
+    @GetMapping("/product/{id}")
+    public String product(@PathVariable int id,Model model){
+        Product productById = productService.getProductById(id);
+        model.addAttribute("product",productById);
+        return "view_product";
+    }
 }
 
 

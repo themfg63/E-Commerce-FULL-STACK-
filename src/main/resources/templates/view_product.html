@@ -6,29 +6,35 @@
 </head>
 <body>
 <section>
-    <div class="container card-sh" style="margin-top: 70px; margin-bottom: 100px">
+    <div class="container card-sh" style="margin-top: 70px; margin-bottom: 100px ">
         <div class="col-md-12 p-5">
             <div class="row">
                 <div class="col-md-6 text-end">
                     <img alt="" src="/img/ürünler/ürün1.jpeg" width="330px" height="400px">
                 </div>
                 <div class="col-md-6">
-                    <p class="fs-3">Laptop</p>
+                    <p class="fs-3">[[${product.title}]]</p>
                     <p>
-                        <span class="fw-bold">Açıklama: </span><br> HP Laptop, 256GB SSD, 8GB RAM
+                        <span class="fw-bold">Açıklama: </span><br> [[${product.description}]]
                     </p>
                     <p>
-                        <span class="fw-bold">Ürün Detayı:</span><br>Status:
-                        <span class="badge bg-success">Stokta Mevcut</span>
-                        <span class="badge bg-danger">Stokta Yok</span><br>
-                        Kategori: Laptop <br>
-                        7 Gün İçerisinde İade ve Değişim Hakkı
+                        <span class="fw-bold">Ürün Detayı:</span><br>
+                        Stok Durumu:
+                        <th:block th:if="${product.stock > 0}">
+                            <span class="badge bg-success">Stokta Mevcut</span>
+                        </th:block>
+                        <th:block th:unless="${product.stock > 0}">
+                            <span class="badge bg-danger">Stokta Yok</span>
+                        </th:block>
+                        <br>
+                        Kategori: [[${product.category}]] <br>
+                        <p class="text-warning">7 Gün İçerisinde İade ve Değişim Hakkı</p>
                     </p>
                     <p class="fs-5 fw-bold">
                         Fiyat: &nbsp; &nbsp; &nbsp; &nbsp;
-                        12.000 &#8378;
-                        <span class="fs-6 text-decoration-line-through text-secondary">15.000 &#8378;</span>
-                        <span class="fs-6 text-success">%20 İndirimli Fiyat</span>
+                        [[${product.discountPrice}]] &#8378;
+                        <span class="fs-6 text-decoration-line-through text-secondary">[[${product.price}]] &#8378;</span>
+                        <span class="fs-6 text-success">%[[${product.discount}]] İndirimli Fiyat</span>
                     </p>
                     <div class="row">
                         <div class="col-md-4 text-warning text-center p-2">
@@ -44,7 +50,13 @@
                             <p>Ücretsiz Kargo</p>
                         </div>
                     </div>
-                    <a href="login.jsp" class="btn btn-success  col-md-12">Sepete Ekle</a>
+                    <th:block th:if="${product.stock > 0}">
+                        <a href="login.jsp" class="btn btn-success  col-md-12">Sepete Ekle</a>
+                    </th:block>
+                    <th:block th:unless="${product.stock > 0}">
+                        <a href="#" class="btn btn-warning text-white   col-md-12">Gelince Haber Ver</a>
+                    </th:block>
+
                 </div>
             </div>
         </div>

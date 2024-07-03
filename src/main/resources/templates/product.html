@@ -24,10 +24,11 @@
                 <div class="card shadow-sm p-0 mb-5 bg-body-tertiary rounded">
                     <div class="card-body">
                         <div class="list-group">
-                            <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-                                Kategoriler
+                            <p class="fs-4">Kategoriler</p>
+                            <a href="/products"  class="list-group-item list-group-item-action " th:classappend="${paramValue == ''} ? 'active':''" aria-current="true">
+                                Tümü
                             </a>
-                            <a href="#" th:each="c:${categories}" class="list-group-item list-group-item-action">[[${c.name}]]</a>
+                            <a th:href="@{'/products?category='+${c.name}}" th:classappend="${paramValue == c.name} ? 'active':''" th:each="c:${categories}" class="list-group-item list-group-item-action">[[${c.name}]]</a>
                         </div>
                     </div>
                 </div>
@@ -37,6 +38,7 @@
                     <div class="card-body">
                         <p class="fs-3 text-center">Ürünler</p>
                         <div class="row">
+                            <th:block th:if="${products.size > 0}">
                             <div class="col-md-3" th:each="p:${products}">
                                 <div class="card">
                                     <div class="card-body text-center">
@@ -48,12 +50,15 @@
                                             <span class="text-decoration-line-through text-secondary">[[${p.price}]] TL</span>
                                             <br />
                                             <span class="fs-6 text-success">Sepette %[[${p.discount}]] indirim.</span>
-                                            <a href="/product" class="btn btn-primary col-md-6 offset-md-3">Detaylı İncele</a>
+                                            <a th:href="@{'/product/'+${p.id}}" class="btn btn-primary col-md-6 offset-md-3">Detaylı İncele</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
+                            </th:block>
+                            <th:block th:unless="${products.size > 0 }">
+                                <p class="fs-4 text-center mt-4 text-danger">Ürün Bulunmamaktadır.</p>
+                            </th:block>
                         </div>
                     </div>
                 </div>
