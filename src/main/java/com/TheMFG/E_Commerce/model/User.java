@@ -20,20 +20,12 @@ public class User {
     private Integer id;
 
     private String name;
-
     private String mobileNumber;
-
     private String email;
-
     private String address;
-
     private String city;
-
     private String state;
-
     private String pincode;
-
     private String password;
-
-    private String profileImage;
+    private String profilImage;
 }

@@ -8,78 +8,77 @@
     <section>
         <div class="container mt-5 p-5">
             <div class="row">
-                <div class="col-md-4 p-5">
-                    <img src="img/ecom.png" alt="" width="100%" height="400px">
+                <div class="col-md-5 p-5">
+                    <img alt="" src="img/ecom.png" width="100%" height="400px">
                 </div>
-                <div class="col-md-8 p-5">
+                <div class="col-md-7 p-2">
                     <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-                        <div class="card-header">
+                        <div class="card-header text-center">
                             <p class="fs-4 text-center">Kayıt Ol</p>
                             <th:block th:if="${session.succMsg}">
                                 <p class="text-success fw-bold">[[${session.succMsg}]]</p>
                                 <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
                             </th:block>
-
                             <th:block th:if="${session.errorMsg}">
-                                <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
+                                <p class="text-success fw-bold">[[${session.errorMsg}]]</p>
                                 <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
                             </th:block>
                         </div>
                         <div class="card-body">
-                            <form action="/admin/saveProduct" method="post" enctype="multipart/form-data">
+                            <form action="/saveUser" enctype="multipart/form-data" method="post">
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">Ad Soyad</label>
-                                        <input class="form-control" name="name" type="text" required/>
+                                        <input required class="form-control" name="name" type="text">
                                     </div>
                                     <div class="col">
                                         <label class="form-label">Telefon Numarası</label>
-                                        <input class="form-control" name="telNo" type="number" required/>
+                                        <input required class="form-control" name="mobileNumber" type="number">
                                     </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">E-Mail</label>
-                                        <input class="form-control" name="email" type="email" required/>
-                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input required class="form-control" name="email" type="email">
                                 </div>
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">Adres</label>
-                                        <input class="form-control" name="address" type="text" required/>
+                                        <input required class="form-control" name="address" type="text">
                                     </div>
                                     <div class="col">
                                         <label class="form-label">Şehir</label>
-                                        <input class="form-control" name="city" type="text" required>
+                                        <input required class="form-control" name="city" type="text">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">Ülke</label>
-                                        <input class="form-control" name="state" type="text" required>
+                                        <input required class="form-control" name="state" type="text">
                                     </div>
                                     <div class="col">
                                         <label class="form-label">Posta Kodu</label>
-                                        <input class="form-control" name="pincode" type="number" required>
+                                        <input required class="form-control" name="pincode" type="number">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">Şifre</label>
-                                        <input class="form-control" name="password" type="password" required>
+                                        <input required class="form-control" name="password" type="password">
                                     </div>
                                     <div class="col">
                                         <label class="form-label">Şifre Tekrar</label>
-                                        <input class="form-control" name="cpassword" type="password" required>
+                                        <input required class="form-control" name="cpassword" type="password">
                                     </div>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Profil Fotoğrafı</label>
-                                    <input class="form-control" name="img " type="file">
+                                    <input class="form-control" name="img" type="file">
                                 </div>
-                                <button type="submit" class="btn bg-primary text-white col-md-12">KAYDOL</button>
+                                <button type="submit" class="btn bg-primary text-white col-md-12">Kaydol</button>
                             </form>
                         </div>
                         <div class="card-footer text-center">
-                            Zaten Hesabınız Var Mı? <a href="/login" class="text-decoration-none">Tıkla</a>
+                            Bir hesabınız var mı? <a href="/login" class="text-decoration-none">Giriş Yap</a>
                         </div>
                     </div>
                 </div>
