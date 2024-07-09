@@ -4,4 +4,6 @@ import com.TheMFG.E_Commerce.model.User;
 
 public interface UserService {
     public User saveUser(User user);
+
+    public User getUserByEmail(String email);
 }

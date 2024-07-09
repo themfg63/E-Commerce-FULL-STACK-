@@ -2,8 +2,10 @@ package com.TheMFG.E_Commerce.controller;
 
 import com.TheMFG.E_Commerce.model.Category;
 import com.TheMFG.E_Commerce.model.Product;
+import com.TheMFG.E_Commerce.model.User;
 import com.TheMFG.E_Commerce.service.Interface.CategoryService;
 import com.TheMFG.E_Commerce.service.Interface.ProductService;
+import com.TheMFG.E_Commerce.service.Interface.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -19,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -29,6 +32,20 @@ public class AdminController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private UserService userService;
+
+    @ModelAttribute
+    public void getUserDetails(Principal p, Model m){
+        if (p != null){
+            String email = p.getName();
+            User user = userService.getUserByEmail(email);
+            m.addAttribute("user",user);
+        }
+        List<Category> allActiveCategory = categoryService.getAllActiveCategory();
+        m.addAttribute("category",allActiveCategory);
+    }
 
     @GetMapping("/")
     public String index(){
