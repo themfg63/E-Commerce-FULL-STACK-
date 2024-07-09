@@ -29,4 +29,5 @@ public class User {
     private String password;
     private String profilImage;
     private String role;
+    private Boolean isEnable;
 }
