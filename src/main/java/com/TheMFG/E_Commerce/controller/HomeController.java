@@ -6,9 +6,13 @@ import com.TheMFG.E_Commerce.model.User;
 import com.TheMFG.E_Commerce.service.Interface.CategoryService;
 import com.TheMFG.E_Commerce.service.Interface.ProductService;
 import com.TheMFG.E_Commerce.service.Interface.UserService;
+import com.TheMFG.E_Commerce.util.CommonUtil;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -17,12 +21,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class HomeController {
@@ -34,6 +40,13 @@ public class HomeController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CommonUtil commonUtil;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
 
     @ModelAttribute
     public void getUserDetails(Principal p, Model m){
@@ -99,7 +112,61 @@ public class HomeController {
         return "redirect:/register";
     }
 
+    @GetMapping("/forgot-password")
+    public String showForgotPassword(){
+        return "forgot_password.html";
+    }
 
+    @PostMapping("/forgot-password")
+    public String processForgotPassword(@RequestParam String email, HttpSession session, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
+        User userByEmail = userService.getUserByEmail(email);
+
+        if(ObjectUtils.isEmpty(userByEmail)){
+            session.setAttribute("errorMsg","Geçersiz Mail Adresi");
+        }else {
+            String resetToken = UUID.randomUUID().toString();
+            userService.updateUserResetToken(email,resetToken);
+
+            String url = CommonUtil.generateUrl(request ) + "/reset-password?token=" + resetToken;
+
+            Boolean sendMail = commonUtil.sendMail(url,email );
+
+            if(sendMail){
+                session.setAttribute("succMsg","Lütfen mail adresinizi kontrol ediniz.. Şifre güncelleme linki gönderildi.");
+            }else{
+                session.setAttribute("errorMsg","Beklenmedik bir hata oluştu! Şifre güncelleme linki gönderilemedi.");
+            }
+        }
+        return "redirect:/forgot-password";
+    }
+
+    @GetMapping("/reset-password")
+    public String showResetPassword(@RequestParam String token, HttpSession session, Model m){
+        User userByToken = userService.getUserByToken(token);
+
+        if(userByToken == null){
+            m.addAttribute("msg","Şifre güncelleme linkiniz geçersiz veya süresi dolmuş! ");
+            return "message";
+        }
+        m.addAttribute("token",token);
+        return "reset_password";
+    }
+
+    @PostMapping("/reset-password")
+    public String resetPassword(@RequestParam String token, @RequestParam String password,HttpSession session,Model model){
+        User userByToken = userService.getUserByToken(token);
+        if(userByToken == null){
+            model.addAttribute("errorMsg","Şifre güncelleme linkiniz geçersiz veya süresi dolmuş !");
+            return "message";
+        }else{
+            userByToken.setPassword(passwordEncoder.encode(password));
+            userByToken.setResetToken(null);
+            userService.updateUser(userByToken);
+          //  session.setAttribute("succMsg","Şifreniz başarıyla güncellendi");
+            model.addAttribute("msg","Şifreniz başarıyla güncellendi");
+            return "message";
+        }
+    }
 }
 
 

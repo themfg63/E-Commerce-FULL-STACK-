@@ -35,4 +35,5 @@ public class User {
     private Boolean accountNonLocked;
     private Integer failedAttempt;
     private Date lockTime;
+    private String resetToken;
 }
