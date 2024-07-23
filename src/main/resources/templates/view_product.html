@@ -9,14 +9,16 @@
     <div class="container card-sh" style="margin-top: 70px; margin-bottom: 100px ">
         <div class="col-md-12 p-5">
             <div class="row">
+
                 <th:block th:if="${session.succMsg}">
                     <p class="text-success alert alert-success text-center" role="alert">[[${session.succMsg}]]</p>
                     <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
                 </th:block>
                 <th:block th:if="${session.errorMsg}">
-                    <p class="text-danger text-center alert alert-danger">[[${session.errorMsg}]]</p>
+                    <p class="text-danger text-center alert alert-danger" role="alert">[[${session.errorMsg}]]</p>
                     <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
                 </th:block>
+
                 <div class="col-md-6 text-end">
                     <img alt="" src="/img/ürünler/ürün1.jpeg" width="330px" height="400px">
                 </div>
@@ -63,7 +65,7 @@
                             <a href="/signin" class="btn btn-success col-md-12">Sepete Ekle</a>
                         </th:block>
                         <th:block th:unless="${user == null}">
-                            <a th:href="@{'/user/addCart?pid='+${product.id}+'&uid='+${user.id}}" class="btn btn-danger col-md-12">Sepete Ekle</a>
+                            <a th:href="@{'/user/addCart?pid='+${product.id}+'&uid='+${user.id}}" class="btn btn-success col-md-12">Sepete Ekle</a>
                         </th:block>
                     </th:block>
                     <th:block th:unless="${product.stock > 0}">
