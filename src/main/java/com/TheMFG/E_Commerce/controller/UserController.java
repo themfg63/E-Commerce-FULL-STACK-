@@ -85,4 +85,9 @@ public class UserController {
         cartService.updateQuantity(sy,cid);
         return "redirect:/user/cart";
     }
+
+    @GetMapping("/orders")
+    public String orderPage(){
+        return "/user/order";
+    }
 }

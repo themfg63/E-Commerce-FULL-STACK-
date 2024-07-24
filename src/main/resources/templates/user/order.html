@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<section>
+    <div class="container mt-5 p-5">
+        <div class="row">
+            <div class="col-md-6">
+                <form>
+                    <div class="mb-2 row">
+                        <p class="text-center fs-2">Adres Bilgileri</p>
+                        <hr>
+                        <div class="col p-1">
+                            <label>Ad</label>
+                            <input type="text" name="firstName" class="form-control mt-1">
+                        </div>
+                        <div class="col p-1">
+                            <label>Soyad</label>
+                            <input type="text" name="lastName" class="form-control mt-1">
+                        </div>
+                    </div>
+
+                    <div class="mb-2 row">
+                        <div class="col p-1">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-control mt-1">
+                        </div>
+                        <div class="col p-1">
+                            <label>Telefon No</label>
+                            <input type="text" name="mobileNo" class="form-control mt-1">
+                        </div>
+                    </div>
+
+                    <div class="mb-2 row">
+                        <div class="col p-1">
+                            <label>Şehir</label>
+                            <input type="text" name="city" class="form-control mt-1">
+                        </div>
+                        <div class="col p-1">
+                            <label>İlçe</label>
+                            <input type="text" name="state" class="form-control mt-1">
+                        </div>
+                    </div>
+
+                    <div class="mb-2 row">
+                        <div class="col p-1">
+                            <label>Adres</label>
+                            <input type="text" name="address" class="form-control mt-1">
+                        </div>
+                        <div class="col p-1">
+                            <label>Posta Kodu</label>
+                            <input type="text" name="pincode" class="form-control mt-1">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <p class="text-center fs-4">Ödeme Bilgileri</p>
+                <hr>
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                            <tr>
+                                <td>Toplam Fiyat</td>
+                                <td>:</td>
+                                <td>100 &#8378;</td>
+                            </tr>
+                            <tr>
+                                <td>Kargo Ücreti</td>
+                                <td>:</td>
+                                <td>100 &#8378;</td>
+                            </tr>
+                            <tr>
+                                <td>KDV</td>
+                                <td>:</td>
+                                <td>100 &#8378;</td>
+                            </tr>
+                            <tr class="fw-bold border-1">
+                                <td>Ödenecek Tutar</td>
+                                <td>:</td>
+                                <td>300 &#8378;</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Ödeme Yöntemi Seç</label>
+                                <select class="form-control">
+                                    <option>--Seç--</option>
+                                    <option>Kapıda Ödeme</option>
+                                    <option>Kredi Kartı ile Online Ödeme</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn bg-primary text-white col-md-12">Siparişi Oluştur </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
