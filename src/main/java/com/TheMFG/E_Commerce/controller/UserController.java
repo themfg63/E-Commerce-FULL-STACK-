@@ -2,14 +2,17 @@ package com.TheMFG.E_Commerce.controller;
 
 import com.TheMFG.E_Commerce.model.Cart;
 import com.TheMFG.E_Commerce.model.Category;
+import com.TheMFG.E_Commerce.model.ProductOrder;
 import com.TheMFG.E_Commerce.model.User;
 import com.TheMFG.E_Commerce.model.request.OrderRequest;
 import com.TheMFG.E_Commerce.service.Interface.CartService;
 import com.TheMFG.E_Commerce.service.Interface.CategoryService;
 import com.TheMFG.E_Commerce.service.Interface.OrderService;
 import com.TheMFG.E_Commerce.service.Interface.UserService;
+import com.TheMFG.E_Commerce.util.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -109,5 +112,35 @@ public class UserController {
     @GetMapping("/success")
     public String loadSuccess(){
         return "/user/success";
+    }
+
+    @GetMapping("/user-orders")
+    public String myOrder(Model m,Principal p){
+        User loginUser = getLoggedInUserDetails(p);
+        List<ProductOrder> orders = orderService.getOrdersByUser(loginUser.getId());
+        m.addAttribute("orders",orders);
+        return "/user/my_orders";
+    }
+
+    @GetMapping("/update-status")
+    public String updateOrderStatus(@RequestParam Integer id,@RequestParam Integer st,HttpSession session){
+        OrderStatus[] values = OrderStatus.values();
+        String status = null;
+
+        for(OrderStatus orderSt : values){
+            if(orderSt.getId().equals(st)){
+                status = orderSt.getName();
+            }
+        }
+
+        Boolean updateOrder = orderService.updateOrderStatus(id,status);
+
+        if(updateOrder){
+            session.setAttribute("succMsg","Sipariş Durumu Güncellendi");
+        }else{
+            session.setAttribute("errorMsg","Sipariş Durumu Güncellenirken Bir Hata Oluştu!");
+        }
+
+        return "redirect:/user/user-orders";
     }
 }
