@@ -27,23 +27,28 @@ public class AuthFailureHandleImpl extends SimpleUrlAuthenticationFailureHandler
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException{
         String email = request.getParameter("username");
         User user = userRepository.findByEmail(email);
-        if(user.getIsEnable()){
-            if(user.getAccountNonLocked()){
-                if(user.getFailedAttempt()<AppConstant.ATTEMPT_TIME){
-                    userService.increaseFailedAttempt(user);
-                }else{
-                    userService.userAccountLock(user);
-                    exception = new LockedException("Hesabınız Bloke Edildi!! Başarısız Deneme Sayısı = 3");
+
+        if(user != null) {
+            if (user.getIsEnable()) {
+                if (user.getAccountNonLocked()) {
+                    if (user.getFailedAttempt() < AppConstant.ATTEMPT_TIME) {
+                        userService.increaseFailedAttempt(user);
+                    } else {
+                        userService.userAccountLock(user);
+                        exception = new LockedException("Hesabınız Bloke Edildi!! Başarısız Deneme Sayısı = 3");
+                    }
+                } else {
+                    if (userService.unlockAccountTimeExpired(user)) {
+                        exception = new LockedException("Hesabınız Bloke Edildi!! Lütfen Tekrar Giriş Yapmayı Deneyiniz ");
+                    } else {
+                        exception = new LockedException("Hesabınız Bloke Edildi!! Lütfen Daha Sonra Tekrar Giriş Yapmayı Deneyiniz");
+                    }
                 }
-            }else{
-                if(userService.unlockAccountTimeExpired(user)){
-                    exception = new LockedException("Hesabınız Bloke Edildi!! Lütfen Tekrar Giriş Yapmayı Deneyiniz ");
-                }else{
-                    exception = new LockedException("Hesabınız Bloke Edildi!! Lütfen Daha Sonra Tekrar Giriş Yapmayı Deneyiniz");
-                }
+            } else {
+                exception = new LockedException("Hesabınız Aktifleştirilmedi! ");
             }
         }else{
-            exception = new LockedException("Hesabınız Aktifleştirilmedi! ");
+            exception = new LockedException("Email veya Şifre Hatalı");
         }
         super.setDefaultFailureUrl("/signin?error");
         super.onAuthenticationFailure(request,response,exception);
