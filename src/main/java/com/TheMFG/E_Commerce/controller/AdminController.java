@@ -2,11 +2,10 @@ package com.TheMFG.E_Commerce.controller;
 
 import com.TheMFG.E_Commerce.model.Category;
 import com.TheMFG.E_Commerce.model.Product;
+import com.TheMFG.E_Commerce.model.ProductOrder;
 import com.TheMFG.E_Commerce.model.User;
-import com.TheMFG.E_Commerce.service.Interface.CartService;
-import com.TheMFG.E_Commerce.service.Interface.CategoryService;
-import com.TheMFG.E_Commerce.service.Interface.ProductService;
-import com.TheMFG.E_Commerce.service.Interface.UserService;
+import com.TheMFG.E_Commerce.service.Interface.*;
+import com.TheMFG.E_Commerce.util.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -30,15 +29,14 @@ import java.util.List;
 public class AdminController {
     @Autowired
     private CategoryService categoryService;
-
     @Autowired
     private ProductService productService;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private CartService cartService;
+    @Autowired
+    private OrderService orderService;
 
     @ModelAttribute
     public void getUserDetails(Principal p, Model m){
@@ -228,5 +226,33 @@ public class AdminController {
             session.setAttribute("errorMsg","Beklenmedik Bir Hata Oluştu!");
         }
         return "redirect:/admin/users";
+    }
+
+    @GetMapping("/orders")
+    public String getAllOrders(Model m){
+        List<ProductOrder> allOrders = orderService.getAllOrders();
+        m.addAttribute("orders",allOrders);
+        return "/admin/orders";
+    }
+
+    @PostMapping("/update-order-status")
+    public String updateOrderStatus(@RequestParam Integer id,@RequestParam Integer st,HttpSession session){
+        OrderStatus[] values = OrderStatus.values();
+        String status = null;
+
+        for(OrderStatus orderSt : values){
+            if(orderSt.getId().equals(st)){
+                status = orderSt.getName();
+            }
+        }
+
+        Boolean updateOrder = orderService.updateOrderStatus(id,status);
+
+        if(updateOrder){
+            session.setAttribute("succMsg","Sipariş Durumu Güncellendi");
+        }else{
+            session.setAttribute("errorMsg","Sipariş Durumu Güncellenirken Bir Hata Oluştu");
+        }
+        return "redirect:/admin/orders";
     }
 }

@@ -1,8 +1,8 @@
 package com.TheMFG.E_Commerce.util;
 
 public enum OrderStatus {
-    IN_PROGRESS(1,"Ürün Hazırlanıyor"),
-    ORDER_RECIVED(2,"Sipariş Alındı"),
+    IN_PROGRESS(1,"Sipariş Alındı"),
+    ORDER_RECIVED(2,"Ürün Hazırlanıyor"),
     PRODUCT_PACKED(3,"Ürün Kargoya Verildi"),
     OUT_FOR_DELIVERY(4,"Kargo Dağıtıma Çıktı"),
     DELIVERED(5,"Teslim Edildi"),
