@@ -7,6 +7,7 @@ import com.TheMFG.E_Commerce.model.request.OrderRequest;
 import com.TheMFG.E_Commerce.repository.CartRepository;
 import com.TheMFG.E_Commerce.repository.ProductOrderRepository;
 import com.TheMFG.E_Commerce.service.Interface.OrderService;
+import com.TheMFG.E_Commerce.util.CommonUtil;
 import com.TheMFG.E_Commerce.util.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,13 @@ import java.util.UUID;
 public class OrderServiceImpl implements OrderService {
     @Autowired
     private ProductOrderRepository orderRepository;
-
     @Autowired
     private CartRepository cartRepository;
+    @Autowired
+    private CommonUtil commonUtil;
 
     @Override
-    public void saveOrder(Integer userid, OrderRequest orderRequest) {
+    public void saveOrder(Integer userid, OrderRequest orderRequest) throws Exception{
         List<Cart> carts = cartRepository.findByUserId(userid);
 
         for(Cart cart : carts){
@@ -55,7 +57,9 @@ public class OrderServiceImpl implements OrderService {
             address.setPincode(orderRequest.getPincode());
 
             order.setOrderAddress(address);
-            orderRepository.save(order);
+
+            ProductOrder saveOrder = orderRepository.save(order);
+            commonUtil.sendMailForProductOrder(saveOrder,"Başarılı");
         }
     }
 
@@ -66,16 +70,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Boolean updateOrderStatus(Integer id, String status){
+    public ProductOrder updateOrderStatus(Integer id, String status){
         Optional<ProductOrder> findById = orderRepository.findById(id);
 
         if(findById.isPresent()){
-            ProductOrder productOrder = findById.get()  ;
+            ProductOrder productOrder = findById.get();
             productOrder.setStatus(status);
-            orderRepository.save(productOrder);
-            return true;
+            ProductOrder updateOrder = orderRepository.save(productOrder);
+            return updateOrder;
         }
-        return false;
+
+        return null;
     }
 
     @Override

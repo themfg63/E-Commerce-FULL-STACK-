@@ -9,6 +9,7 @@ import com.TheMFG.E_Commerce.service.Interface.CartService;
 import com.TheMFG.E_Commerce.service.Interface.CategoryService;
 import com.TheMFG.E_Commerce.service.Interface.OrderService;
 import com.TheMFG.E_Commerce.service.Interface.UserService;
+import com.TheMFG.E_Commerce.util.CommonUtil;
 import com.TheMFG.E_Commerce.util.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class UserController {
     private CartService cartService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private CommonUtil commonUtil;
+
 
     @GetMapping("/")
     public String home(){
@@ -102,7 +106,7 @@ public class UserController {
     }
 
     @PostMapping("/save-order")
-    public String saveOrder(@ModelAttribute OrderRequest request, Principal p){
+    public String saveOrder(@ModelAttribute OrderRequest request, Principal p) throws Exception{
       //  System.out.println(request);
         User user = getLoggedInUserDetails(p);
         orderService.saveOrder(user.getId(),request);
@@ -123,22 +127,28 @@ public class UserController {
     }
 
     @GetMapping("/update-status")
-    public String updateOrderStatus(@RequestParam Integer id,@RequestParam Integer st,HttpSession session){
+    public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session){
         OrderStatus[] values = OrderStatus.values();
         String status = null;
 
         for(OrderStatus orderSt : values){
             if(orderSt.getId().equals(st)){
-                status = orderSt.getName();
+                status = orderSt.getName()  ;
             }
         }
 
-        Boolean updateOrder = orderService.updateOrderStatus(id,status);
+        ProductOrder updateOrder = orderService.updateOrderStatus(id,status);
 
-        if(updateOrder){
+        try {
+            commonUtil.sendMailForProductOrder(updateOrder, status);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        if(!ObjectUtils.isEmpty(updateOrder)){
             session.setAttribute("succMsg","Sipariş Durumu Güncellendi");
         }else{
-            session.setAttribute("errorMsg","Sipariş Durumu Güncellenirken Bir Hata Oluştu!");
+            session.setAttribute("errorMsg","Sipariş Durumu Beklenmedik Bir Hatadan Dolayı Güncellenemedi");
         }
 
         return "redirect:/user/user-orders";

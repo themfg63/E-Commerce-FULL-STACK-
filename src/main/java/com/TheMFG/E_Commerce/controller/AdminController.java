@@ -5,9 +5,11 @@ import com.TheMFG.E_Commerce.model.Product;
 import com.TheMFG.E_Commerce.model.ProductOrder;
 import com.TheMFG.E_Commerce.model.User;
 import com.TheMFG.E_Commerce.service.Interface.*;
+import com.TheMFG.E_Commerce.util.CommonUtil;
 import com.TheMFG.E_Commerce.util.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,6 +39,8 @@ public class AdminController {
     private CartService cartService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private CommonUtil commonUtil;
 
     @ModelAttribute
     public void getUserDetails(Principal p, Model m){
@@ -236,7 +240,7 @@ public class AdminController {
     }
 
     @PostMapping("/update-order-status")
-    public String updateOrderStatus(@RequestParam Integer id,@RequestParam Integer st,HttpSession session){
+    public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session){
         OrderStatus[] values = OrderStatus.values();
         String status = null;
 
@@ -246,13 +250,20 @@ public class AdminController {
             }
         }
 
-        Boolean updateOrder = orderService.updateOrderStatus(id,status);
+        ProductOrder updateOrder = orderService.updateOrderStatus(id,status);
 
-        if(updateOrder){
+        try{
+            commonUtil.sendMailForProductOrder(updateOrder,status);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        if(!ObjectUtils.isEmpty(updateOrder)){
             session.setAttribute("succMsg","Sipariş Durumu Güncellendi");
         }else{
-            session.setAttribute("errorMsg","Sipariş Durumu Güncellenirken Bir Hata Oluştu");
+            session.setAttribute("errorMsg","Sipariş Durumu Beklenmedik Bir Hata Yüzünden Güncellenemedi");
         }
+
         return "redirect:/admin/orders";
     }
 }

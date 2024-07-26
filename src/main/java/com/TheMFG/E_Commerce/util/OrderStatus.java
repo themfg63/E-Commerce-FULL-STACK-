@@ -6,7 +6,8 @@ public enum OrderStatus {
     PRODUCT_PACKED(3,"Ürün Kargoya Verildi"),
     OUT_FOR_DELIVERY(4,"Kargo Dağıtıma Çıktı"),
     DELIVERED(5,"Teslim Edildi"),
-    CANCEL(6,"İptal Edildi!");
+    CANCEL(6,"İptal Edildi!"),
+    SUCCESS(7, "Başarılı!");
 
     private Integer id;
     private String name;
