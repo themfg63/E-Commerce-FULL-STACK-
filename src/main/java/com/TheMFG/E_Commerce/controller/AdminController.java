@@ -236,6 +236,7 @@ public class AdminController {
     public String getAllOrders(Model m){
         List<ProductOrder> allOrders = orderService.getAllOrders();
         m.addAttribute("orders",allOrders);
+        m.addAttribute("srch",false);
         return "/admin/orders";
     }
 
@@ -269,13 +270,21 @@ public class AdminController {
 
     @GetMapping("/search-order")
     public String searchProduct(@RequestParam String orderId,Model model,HttpSession session){
-        ProductOrder order = orderService.getOrdersByOrderId(orderId);
-        if(ObjectUtils.isEmpty(order)){
-            session.setAttribute("errorMsg","Yanlış Ürün ID'si");
-        }else{
-            model.addAttribute("orderDtls",order);
-        }
+        if(orderId != null && orderId.length() > 0){
+            ProductOrder order = orderService.getOrdersByOrderId(orderId.trim());
 
+            if(ObjectUtils.isEmpty(order)){
+                session.setAttribute("errorMsg","Hatalı Ürün ID'si");
+                model.addAttribute("orderDtls",null);
+            }else{
+                model.addAttribute("orderDtls",order);
+            }
+            model.addAttribute("srch",true);
+        }else {
+            List<ProductOrder> allOrders = orderService.getAllOrders();
+            model.addAttribute("orders",allOrders);
+            model.addAttribute("srch",false);
+        }
         return "/admin/orders";
     }
 }

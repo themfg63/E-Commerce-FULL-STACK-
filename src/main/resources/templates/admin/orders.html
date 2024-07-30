@@ -5,27 +5,29 @@
     <title>Title</title>
 </head>
 <body>
-<section>
-    <div class="container-fluid mt-5 p-1">
-        <div class="row">
-            <div class="text-center mt-2">
-                <p class="text-center fw-bold fa-2x" style="color: #3366FF">Tüm Siparişler</p>
+    <section>
+        <div class="container-fluid mt-5 p-1">
+            <div class="row">
+                <p class="text-center fs-3 mt-2">Sipariş Takip ve Yönetim Ekranı</p>
                 <hr>
-                <a href="/admin/" class="btn btn-sm bg-primary col-md-2"><i class="fa-solid fa-arrow-left"></i>Geri Dön </a>
+                <a href="/admin/" class="text-decoration-none">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Geri
+                </a>
                 <th:block th:if="${session.succMsg}">
                     <p class="text-success fw-bold">[[${session.succMsg}]]</p>
                     <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
                 </th:block>
+
                 <th:block th:if="${session.errorMsg}">
-                    <p class="text-success fw-bold">[[${session.errorMsg}]]</p>
+                    <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
                     <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
                 </th:block>
-
                 <div class="col-md-4 p-4">
-                    <form>
+                    <form action="/admin/search-order" method="get">
                         <div class="row">
                             <div class="col">
-                                <input type="text" class="form-control" name="" placeholder="Sipariş Numarası Giriniz">
+                                <input type="text" class="form-control" name="orderId" placeholder="Sipariş No Girin">
                             </div>
                             <div class="col">
                                 <button class="bn29">Ara</button>
@@ -33,43 +35,97 @@
                         </div>
                     </form>
                 </div>
-            </div>
-            <div class="col-md-12 ps-4 pe-4">
-                <div class="card">
-                    <div class="card-body">
-                        <table class="table table-bordered card-sh">
-                            <thead>
-                            <tr>
-                                <th scope="col">Sipariş Numarası</th>
-                                <th scope="col">Sipariş Detayları</th>
-                                <th scope="col">Sipariş Tarihi</th>
-                                <th scope="col">Ürün Detayı</th>
-                                <th scope="col">Fiyat</th>
-                                <th scope="col">Durum</th>
-                                <th scope="col">İşlem</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                <div class="col-md-12 ps-4 pe-4">
+                    <table class="table table-bordered card-sh">
+                        <thead>
+                        <tr>
+                            <th scope="col">Sipariş No</th>
+                            <th scope="col">Kargo Durumu</th>
+                            <th scope="col">Tarih</th>
+                            <th scope="col">Ürün Detayları</th>
+                            <th scope="col">Fiyat</th>
+                            <th scope="col">Durum</th>
+                            <th scope="col">İşlem</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:if="${srch}">
+                            <th:block th:if="${orderDtls != null}">
+                                <tr>
+                                    <th scope="row">[[${orderDtls.orderId}]]</th>
+                                    <td>
+                                        Ad Soyad : [[${orderDtls.orderAddress.firstName + ' ' + orderDtls.orderAddress.lastName}]]<br>
+                                        Email : [[${orderDtls.orderAddress.email}]] <br>
+                                        Telefon : [[${orderDtls.orderAddress.mobileNo}]] <br>
+                                        Adres : [[${orderDtls.orderAddress.address}]] <br>
+                                        Şehir : [[${orderDtls.orderAddress.city}]] <br>
+                                        Ülke : [[${orderDtls.orderAddress.state}]], [[${orderDtls.orderAddress.pincode}]]
+                                    </td>
+                                    <td>[[${orderDtls.orderDate}]]</td>
+                                    <td>[[${orderDtls.product.title}]]</td>
+                                    <td>
+                                        Adet : [[${orderDtls.quantity}]] <br>
+                                        Fiyat : [[${orderDtls.price}]] <br>
+                                        Toplam Fiyat : [[${orderDtls.quantity * orderDtls.price}]]
+                                    </td>
+                                    <td>[[${orderDtls.status}]]</td>
+                                    <td>
+                                        <form action="/admin/update-order-status" method="post">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <select class="form-control" name="st">
+                                                        <option>--SEÇ--</option>
+                                                        <option value="1">1 - Sipariş Alındı</option>
+                                                        <option value="2">2 - Ürün Hazırlanıyor</option>
+                                                        <option value="3">3 - Ürün Kargoya Verildi</option>
+                                                        <option value="4">4 - Kargo Dağıtıma Çıktı</option>
+                                                        <option value="5">5 - Teslim Edildi</option>
+                                                        <option value="6">6 - İptal Edildi!</option>
+                                                    </select>
+                                                </div>
+                                                <input th:value="${orderDtls.id}" name="id" type="hidden">
+                                                <div class="col">
+                                                    <th:block th:if="${orderDtls.status=='İptal Edildi!'|| orderDtls.status=='Teslim Edildi'}">
+                                                        <button class="btn btn-primary btn-sm col disabled">Güncelle</button>
+                                                    </th:block>
+                                                    <th:block th:unless="${orderDtls.status=='İptal Edildi!'|| orderDtls.status=='Teslim Edildi'}">
+                                                        <button class="btn btn-primary btn-sm col">Güncelle</button>
+                                                    </th:block>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </th:block>
+                            <th:block th:unless="${orderDtls != null}">
+                                <p class="fs-3 text-center text-danger">[[${errorMsg}]]</p>
+                            </th:block>
+                        </th:block>
+                        <th:block th:unless="${srch}">
                             <tr th:each="o:${orders}">
                                 <th scope="row">[[${o.orderId}]]</th>
                                 <td>
                                     Ad Soyad : [[${o.orderAddress.firstName + ' ' + o.orderAddress.lastName}]]<br>
-                                    Email : [[${o.orderAddress.email}]]<br>
-                                    Telefon No : [[${o.orderAddress.mobileNo}]]<br>
-                                    Adres : [[${o.orderAddress.address}]]<br>
-                                    Şehir : [[${o.orderAddress.city}]]<br>
-                                    İlçe : [[${o.orderAddress.state}]], [[${o.orderAddress.pincode}]]
+                                    Email : [[${o.orderAddress.email}]] <br>
+                                    Telefon : [[${o.orderAddress.mobileNo}]] <br>
+                                    Adres : [[${o.orderAddress.address}]] <br>
+                                    Şehir : [[${o.orderAddress.city}]] <br>
+                                    Ülke : [[${o.orderAddress.state}]], [[${o.orderAddress.pincode}]]
                                 </td>
                                 <td>[[${o.orderDate}]]</td>
                                 <td>[[${o.product.title}]]</td>
-                                <td>Adet : [[${o.quantity}]] <br>Fiyat :  [[${o.price}]] &#8378; <br>Toplam Fiyat :  [[${o.quantity * o.price}]] &#8378;</td>
+                                <td>
+                                    Adet : [[${o.quantity}]] <br>
+                                    Fiyat : [[${o.price}]] <br>
+                                    Toplam Fiyat : [[${o.quantity * o.price}]]
+                                </td>
                                 <td>[[${o.status}]]</td>
                                 <td>
                                     <form action="/admin/update-order-status" method="post">
                                         <div class="row">
                                             <div class="col">
                                                 <select class="form-control" name="st">
-                                                    <option>SEÇ</option>
+                                                    <option>--SEÇ--</option>
                                                     <option value="1">1 - Sipariş Alındı</option>
                                                     <option value="2">2 - Ürün Hazırlanıyor</option>
                                                     <option value="3">3 - Ürün Kargoya Verildi</option>
@@ -80,24 +136,23 @@
                                             </div>
                                             <input th:value="${o.id}" name="id" type="hidden">
                                             <div class="col">
-                                                <th:block th:if="${o.status=='İptal Edildi!' || o.status=='Teslim Edildi'}">
+                                                <th:block th:if="${o.status == 'İptal Edildi!' || o.status == 'Teslim Edildi'}">
                                                     <button class="btn btn-primary btn-sm col disabled">Güncelle</button>
                                                 </th:block>
-                                                <th:block th:unless="${o.status=='İptal Edildi!' || o.status=='Teslim Edildi'}">
-                                                    <button class="btn btn-sm btn-primary" >Güncelle</button>
+                                                <th:block th:unless="${o.status == 'İptal Edildi!' || o.status == 'Teslim Edildi'}">
+                                                    <button class="btn btn-primary btn-sm col">Güncelle</button>
                                                 </th:block>
                                             </div>
                                         </div>
                                     </form>
                                 </td>
                             </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                        </th:block>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 </body>
 </html>

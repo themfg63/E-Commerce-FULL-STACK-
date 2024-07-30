@@ -83,6 +83,9 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="/user/profile">Profil</a> </li>
+                                <th:block th:if="${user.role=='ROLE_ADMIN'}">
+                                    <li><a class="dropdown-item" href="/admin/">İşlemler</a> </li>
+                                </th:block>
                                 <th:block th:if="${user.role=='ROLE_USER'}">
                                     <li><a class="dropdown-item" href="/user/user-orders">Siparişlerim</a> </li>
                                 </th:block>
