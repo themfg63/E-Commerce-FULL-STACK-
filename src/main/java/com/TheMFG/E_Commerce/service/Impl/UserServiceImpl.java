@@ -5,9 +5,18 @@ import com.TheMFG.E_Commerce.repository.UserRepository;
 import com.TheMFG.E_Commerce.service.Interface.UserService;
 import com.TheMFG.E_Commerce.util.AppConstant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -105,5 +114,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(User user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public User updateUserProfile(User user, MultipartFile img)  {
+        User dbUser = userRepository.findById(user.getId()).get();
+
+        if(!img.isEmpty()){
+            dbUser.setProfilImage(img.getOriginalFilename());
+        }
+
+        if(!ObjectUtils.isEmpty(dbUser)){
+            dbUser.setName(user.getName());
+            dbUser.setMobileNumber(user.getMobileNumber());
+            dbUser.setAddress(user.getAddress());
+            dbUser.setCity(user.getCity());
+            dbUser.setState(user.getState());
+            dbUser.setPincode(user.getPincode());
+            dbUser = userRepository.save(dbUser);
+        }
+        try{
+            if(!img.isEmpty()){
+                File saveFile = new ClassPathResource("static/img").getFile();
+                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profil" + File.separator + img.getOriginalFilename());
+                Files.copy(img.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return dbUser;
     }
 }

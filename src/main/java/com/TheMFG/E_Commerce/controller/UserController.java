@@ -14,10 +14,12 @@ import com.TheMFG.E_Commerce.util.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
@@ -35,6 +37,8 @@ public class UserController {
     private OrderService orderService;
     @Autowired
     private CommonUtil commonUtil;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @GetMapping("/")
@@ -156,6 +160,42 @@ public class UserController {
 
     @GetMapping("/profile")
     public String profile(){
+
         return "/user/profile";
+    }
+
+    @PostMapping("/update-profile")
+    public String updateProfile(@ModelAttribute User user, @RequestParam MultipartFile img,HttpSession session){
+        User updateUserProfile = userService.updateUserProfile(user,img);
+        if(ObjectUtils.isEmpty(updateUserProfile)){
+            session.setAttribute("errorMsg","Profil Güncellenemedi");
+        }else {
+            session.setAttribute("succMsg","Profil Güncellendi");
+        }
+
+        return "redirect:/user/profile";
+    }
+
+    @PostMapping("/change-password")
+    public String changePassword(@RequestParam String newPassword, @RequestParam String currentPassword,Principal p,HttpSession session){
+        User loggedInUserDetails = getLoggedInUserDetails(p);
+
+        boolean matches = passwordEncoder.matches(currentPassword,loggedInUserDetails.getPassword());
+
+        if(matches){
+            String encodePassword = passwordEncoder.encode(newPassword);
+            loggedInUserDetails.setPassword(encodePassword);
+            User updateUser = userService.updateUser(loggedInUserDetails);
+
+            if(ObjectUtils.isEmpty(updateUser)){
+                session.setAttribute("errorMsg","Parola Güncellenemedi !! Beklenmedik Bir Hata Oluştu");
+            }else{
+                session.setAttribute("succMsg","Parola Güncellendi");
+            }
+        }else {
+            session.setAttribute("errorMsg","Gİrilen Mevcut Parola Yanlış!");
+        }
+
+        return "redirect:/user/profile";
     }
 }

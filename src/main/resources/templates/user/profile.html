@@ -5,114 +5,86 @@
     <title>Title</title>
 </head>
 <body>
-<section>
-    <div class="container mt-5 p-5 bg-light">
-        <div class="row">
-            <div class="col-md-10 offset-md-1">
-                <p class="fs-3 text-center">Profilim</p>
+    <section>
+        <div class="container-fluid mt-5 p-5 bg-light">
+            <div class="row">
+                <div class="col-md-10 offset-md-1">
+                    <p class="fs-3 text-center">Profilim</p>
+                    <th:block th:if="${session.succMsg}">
+                        <p class="text-success fw-bold">[[${session.succMsg}]]</p>
+                        <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                    </th:block>
+                    <th:block th:if="${session.errorMsg}">
+                        <p class="text-success fw-bold">[[${session.errorMsg}]]</p>
+                        <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                    </th:block>
                     <hr>
-                        <div class="text-center">
-                            <img alt="" src="../img/profil/profil1.webp" class="border p-2" style="width: 110px; height: 110px; border-radius: 50%;">
-                        </div>
-                        <div class="col-md-8 offset-md-2 mt-4">
-                            <table class="table table-borderless">
-                                <tbody>
-                                <form>
-                                    <tr>
-                                        <th scope="row">Ad Soyad: </th>
-                                        <td>
-                                            <input type="text" name="" class="form-control" th:value="${user.name}">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Telefon No:</th>
-                                        <td>
-                                            <input type="text" name="" class="form-control" th:value="${user.mobileNumber}">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">E Mail: </th>
-                                        <td>
-                                            <input type="text" name="" class="form-control" th:value="${user.email}" readonly>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Adres: </th>
-                                        <td>
-                                            <input type="text" name="" class="form-control" th:value="${user.address}">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">İlçe: </th>
-                                        <td>
-                                            <input type="text" name="" class="form-control" th:value="${user.state}">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Şehir: </th>
-                                        <td>
-                                            <input type="text" name="" class="form-control" th:value="${user.city}">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Posta Kodu: </th>
-                                        <td>
-                                            <input type="text" name="" class="form-control" th:value="${user.pincode}">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Profil Fotoğrafı: </th>
-                                        <td>
-                                            <input type="file" name="" class="form-control">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Role: </th>
-                                        <td>
-                                            <input type="text" name="" class="form-control" th:value="${user.role}" readonly>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Hesap Durumu </th>
-                                        <td>
-                                            <input type="text" name="" class="form-control" readonly th:value="${user.isEnable}">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td class="text-center">
-                                            <button class="bn29">Güncelle</button>
-                                        </td>
-                                    </tr>
-                                </form>
-                                </tbody>
-                            </table>
-                        </div>
-            </div>
-            <hr>
-            <div class="col-md-10 offset-md-1 mt-1">
-                <div class="row">
-                    <p class="text-center fs-3">Şifre Değiştir</p>
-                    <div class="col-md-6 offset-md-3">
+                    <div class="text-center">
+                        <img alt="" th:src="@{'../img/profil/'+${user.profilImage}}" class="border p-2" style="width: 110px; height: 110px; border-radius: 50%">
+                    </div>
+                    <div class="col-md-8 offset-md-2 mt-4">
                         <table class="table table-borderless">
                             <tbody>
-                            <form>
+                            <form action="/user/update-profile" method="post" enctype="multipart/form-data">
                                 <tr>
-                                    <th scope="row">Mevcut Şifre: </th>
+                                    <th scope="row">Ad Soyad : </th>
                                     <td>
-                                        <input type="text" name="" class="form-control">
+                                        <input type="text" name="name" class="form-control" th:value="${user.name}">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Yeni Şifre: </th>
+                                    <th scope="row">Telefon No : </th>
                                     <td>
-                                        <input type="text" name="" class="form-control">
+                                        <input type="text" name="mobileNumber" class="form-control" th:value="${user.mobileNumber}">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th scope="row">Yeni Şifre Tekrar: </th>
+                                    <th scope="row">Email : </th>
                                     <td>
-                                        <input type="text" name="" class="form-control">
+                                        <input type="email" name="email" class="form-control" th:value="${user.email}" readonly>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Adres : </th>
+                                    <td>
+                                        <input type="text" name="address" class="form-control" th:value="${user.address}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Şehir : </th>
+                                    <td>
+                                        <input type="text" name="city" class="form-control" th:value="${user.city}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Ülke : </th>
+                                    <td>
+                                        <input type="text" name="state" class="form-control" th:value="${user.state}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Posta Kodu : </th>
+                                    <td>
+                                        <input type="text" name="pincode" class="form-control" th:value="${user.pincode}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Profil Fotoğrafı : </th>
+                                    <td>
+                                        <input type="file" name="img" class="form-control" value="">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Role : </th>
+                                    <td>
+                                        <input type="text" name="" class="form-control" th:value="${user.role}" readonly>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Hesap Durumu : </th>
+                                    <td>
+                                        <input type="text" name="" class="form-control" th:value="${user.isEnable}" readonly>
+                                        <input type="hidden" th:value="${user.id}" name="id">
                                     </td>
                                 </tr>
                                 <tr>
@@ -126,9 +98,46 @@
                         </table>
                     </div>
                 </div>
+                <hr>
+                <div class="col-md-10 offset-md-1 mt-1">
+                    <div class="row">
+                        <p class="text-center fs-3">Parola Değiştir</p>
+                        <div class="col-md-6 offset-md-3">
+                            <table class="table table-borderless">
+                                <tbody>
+                                <form action="/user/change-password" method="post">
+                                    <tr>
+                                        <th scope="row">Mevcut Şifre : </th>
+                                        <td>
+                                            <input type="password" name="currentPassword" class="form-control">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Yeni Şifre : </th>
+                                        <td>
+                                            <input type="password" name="newPassword" class="form-control">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Yeni Şifre Tekrar : </th>
+                                        <td>
+                                            <input type="password" name="confirmPassword" class="form-control">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td class="text-center">
+                                            <button class="bn29">Güncelle</button>
+                                        </td>
+                                    </tr>
+                                </form>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 </body>
 </html>
