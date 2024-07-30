@@ -266,4 +266,16 @@ public class AdminController {
 
         return "redirect:/admin/orders";
     }
+
+    @GetMapping("/search-order")
+    public String searchProduct(@RequestParam String orderId,Model model,HttpSession session){
+        ProductOrder order = orderService.getOrdersByOrderId(orderId);
+        if(ObjectUtils.isEmpty(order)){
+            session.setAttribute("errorMsg","Yanlış Ürün ID'si");
+        }else{
+            model.addAttribute("orderDtls",order);
+        }
+
+        return "/admin/orders";
+    }
 }
