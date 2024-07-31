@@ -83,10 +83,11 @@ public class HomeController {
     @GetMapping("/products")
     public String products(Model m, @RequestParam(value = "category",defaultValue = "") String category){
         List<Category> categories = categoryService.getAllActiveCategory();
-        List<Product> products = productService.getAllActiveProducts(category);
+        //List<Product> products = productService.getAllActiveProducts(category);
         m.addAttribute("categories",categories);
-        m.addAttribute("products",products);
+        //m.addAttribute("products",products);
         m.addAttribute("paramValue",category);
+
         return "product";
     }
 
