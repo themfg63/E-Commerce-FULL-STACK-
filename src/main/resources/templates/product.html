@@ -39,7 +39,7 @@
                     <div class="card-body">
                         <p class="fs-3 text-center">Ürünler</p>
                         <div class="row">
-                            <th:block th:if="${products.size > 0}">
+                            <th:block th:if="${productsSize > 0}">
                             <div class="col-md-3" th:each="p:${products}">
                                 <div class="card">
                                     <div class="card-body text-center">
@@ -57,14 +57,14 @@
                                 </div>
                             </div>
                             </th:block>
-                            <th:block th:unless="${products.size > 0 }">
+                            <th:block th:unless="${productsSize > 0 }">
                                 <p class="fs-4 text-center mt-4 text-danger">Ürün Bulunmamaktadır.</p>
                             </th:block>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-4">Toplam Ürün: 1</div>
+                    <div class="col-md-4">Toplam Ürün: [[${totalElements}]]</div>
                     <div class="col-md-6">
                         <nav aria-label="mfg">
                             <ul class="pagination">

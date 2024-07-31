@@ -113,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
         if(ObjectUtils.isEmpty(category)){
             pageProduct = productRepository.findByIsActiveTrue(pageable);
         }else{
-            pageProduct = productRepository.findByCategory(pageable);
+            pageProduct = productRepository.findByCategory(pageable,category);
         }
         return pageProduct;
     }

@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -81,16 +82,26 @@ public class HomeController {
     }
 
     @GetMapping("/products")
-    public String products(Model m, @RequestParam(value = "category",defaultValue = "") String category){
+    public String products(Model model,@RequestParam(value = "category",defaultValue = "") String category,
+                           @RequestParam(name = "pageNo",defaultValue = "0") Integer pageNo,
+                           @RequestParam(name = "pageSize",defaultValue = "9") Integer pageSize ){
         List<Category> categories = categoryService.getAllActiveCategory();
-        //List<Product> products = productService.getAllActiveProducts(category);
-        m.addAttribute("categories",categories);
-        //m.addAttribute("products",products);
-        m.addAttribute("paramValue",category);
+        model.addAttribute("paramValue",category);
+        model.addAttribute("categories",categories);
+
+        Page<Product> page = productService.getAllActiveProductPagination(pageNo,pageSize,category);
+        List<Product> products = page.getContent();
+        model.addAttribute("products",products);
+        model.addAttribute("productsSize",products.size());
+        model.addAttribute("pageNo",page.getNumber());
+        model.addAttribute("pageSize",pageSize);
+        model.addAttribute("totalElements",page.getTotalElements());
+        model.addAttribute("totalPages",page.getTotalPages());
+        model.addAttribute("isFirst",page.isFirst());
+        model.addAttribute("isLast",page.isLast());
 
         return "product";
     }
-
     @GetMapping("/product/{id}")
     public String product(@PathVariable int id,Model model){
         Product productById = productService.getProductById(id);
