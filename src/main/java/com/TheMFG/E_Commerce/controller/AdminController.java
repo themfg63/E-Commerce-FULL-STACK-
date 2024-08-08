@@ -184,15 +184,22 @@ public class AdminController {
     }
 
     @GetMapping("/products")
-    public String loadViewProduct(Model m,@RequestParam(defaultValue = "")String ch){
-        List<Product> products = null;
-
+    public String loadViewProduct(Model m,@RequestParam(defaultValue = "")String ch, @RequestParam(name = "pageNo",defaultValue = "0")Integer pageNo, @RequestParam(name = "pageSize",defaultValue = "5")Integer pageSize){
+        Page<Product> page = null;
         if(ch != null && ch.length() > 0){
-            products = productService.searchProduct(ch);
+            page = productService.searchProductPagination(pageNo,pageSize,ch);
         }else{
-            products = productService.getAllProducts();
+            page = productService.getAllProductsPagination(pageNo,pageSize);
         }
-        m.addAttribute("products",products);
+
+        m.addAttribute("products", page.getContent());
+        m.addAttribute("pageNo",page.getNumber());
+        m.addAttribute("pageSize",pageSize);
+        m.addAttribute("totalElements",page.getTotalElements());
+        m.addAttribute("totalPages",page.getTotalPages());
+        m.addAttribute("isFirst",page.isFirst() );
+        m.addAttribute("isLast",page.isLast());
+
         return "admin/products";
     }
 
@@ -250,10 +257,17 @@ public class AdminController {
     }
 
     @GetMapping("/orders")
-    public String getAllOrders(Model m){
-        List<ProductOrder> allOrders = orderService.getAllOrders();
-        m.addAttribute("orders",allOrders);
-        m.addAttribute("srch",false);
+    public String  getAllOrders(Model model,@RequestParam(name = "pageNo",defaultValue = "0")Integer pageNo,@RequestParam(value = "pageSize",defaultValue = "5")Integer pageSize){
+        Page<ProductOrder> page = orderService.getAllOrdersPagination(pageNo,pageSize);
+        model.addAttribute("orders",page.getContent());
+        model.addAttribute("srch",false);
+        model.addAttribute("pageNo",page.getNumber());
+        model.addAttribute("pageSize",pageSize);
+        model.addAttribute("totalElements",page.getTotalElements());
+        model.addAttribute("totalPages",page.getTotalPages());
+        model.addAttribute("isFirst",page.isFirst());
+        model.addAttribute("isLast",page.isLast());
+
         return "/admin/orders";
     }
 
@@ -286,21 +300,26 @@ public class AdminController {
     }
 
     @GetMapping("/search-order")
-    public String searchProduct(@RequestParam String orderId,Model model,HttpSession session){
+    public String searchProduct(@RequestParam String orderId, Model model,HttpSession session,@RequestParam(name = "pageNo",defaultValue = "0")Integer pageNo,@RequestParam(name = "pageSize",defaultValue = "5")Integer pageSize){
         if(orderId != null && orderId.length() > 0){
             ProductOrder order = orderService.getOrdersByOrderId(orderId.trim());
-
             if(ObjectUtils.isEmpty(order)){
-                session.setAttribute("errorMsg","Hatalı Ürün ID'si");
+                session.setAttribute("errorMsg","Yanlış Sipariş ID");
                 model.addAttribute("orderDtls",null);
             }else{
-                model.addAttribute("orderDtls",order);
+                model.addAttribute("orderDtl",order);
             }
             model.addAttribute("srch",true);
-        }else {
-            List<ProductOrder> allOrders = orderService.getAllOrders();
-            model.addAttribute("orders",allOrders);
+        }else{
+            Page<ProductOrder> page = orderService.getAllOrdersPagination(pageNo,pageSize);
+            model.addAttribute("orders",page);
             model.addAttribute("srch",false);
+            model.addAttribute("pageNo",page.getNumber());
+            model.addAttribute("pageSize",pageSize);
+            model.addAttribute("totalElement",page.getTotalElements());
+            model.addAttribute("totalPages",page.getTotalPages());
+            model.addAttribute("isFirst",page.isFirst());
+            model.addAttribute("isLast",page.isLast());
         }
         return "/admin/orders";
     }
