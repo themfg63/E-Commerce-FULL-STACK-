@@ -323,4 +323,29 @@ public class AdminController {
         }
         return "/admin/orders";
     }
+
+    @GetMapping("/add-admin")
+    public String loadAdminAdd(){
+        return "/admin/add_admin";
+    }
+
+    @PostMapping("/save-admin")
+    public String saveAdmin(@ModelAttribute User user, @RequestParam("img")MultipartFile file, HttpSession session) throws IOException{
+        String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
+        user.setProfilImage(imageName);
+        User saveUser = userService.saveAdmin(user);
+
+        if(!ObjectUtils.isEmpty(saveUser)){
+            if(!file.isEmpty()){
+                File saveFile = new ClassPathResource("static/img").getFile();
+                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profil" + File.separator + file.getOriginalFilename());
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            }
+            session.setAttribute("succMsg", "Kayıt Başarıyla Oluşturuldu");
+        }else{
+            session.setAttribute("errorMsg", "Beklenmedik Bir Hata Oluştu");
+        }
+
+        return "redirect:/admin/add-admin";
+    }
 }
