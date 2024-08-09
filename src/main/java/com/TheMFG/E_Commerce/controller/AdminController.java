@@ -172,17 +172,20 @@ public class AdminController {
     }
 
     @GetMapping("/products")
-    public String loadViewProduct(Model model,@RequestParam(defaultValue = "")String ch,@RequestParam(name = "pageNo",defaultValue = "0")Integer pageNo,@RequestParam(name = "pageSize",defaultValue = "10")Integer pageSize){
+    public String loadViewProduct(Model model, @RequestParam(defaultValue = "")String ch,
+                                  @RequestParam(name = "pageNo",defaultValue = "0")Integer pageNo,
+                                  @RequestParam(name = "pageSize",defaultValue = "10")Integer pageSize){
         Page<Product> page = null;
         if(ch != null && ch.length() > 0){
-            page = productService.searchProductPagination(pageNo,pageSize,ch);
+            page = productService.searchProductPagination(pageNo,pageSize, ch);
         }else{
             page = productService.getAllProductsPagination(pageNo,pageSize);
         }
-        model.addAttribute("product",page.getContent());
+        model.addAttribute("products",page.getContent());
+        model.addAttribute("pageNo",page.getNumber());
         model.addAttribute("pageSize",pageSize);
-        model.addAttribute("totalElements,", page.getTotalElements());
-        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalElements",page.getTotalElements());
+        model.addAttribute("totalPages",page.getTotalPages());
         model.addAttribute("isFirst",page.isFirst());
         model.addAttribute("isLast",page.isLast());
 
@@ -227,7 +230,7 @@ public class AdminController {
         List<User> users = null;
         if(type == 1){
             users = userService.getUsers("ROLE_USER");
-        }else {
+        }else{
             users = userService.getUsers("ROLE_ADMIN");
         }
         model.addAttribute("userType",type);
