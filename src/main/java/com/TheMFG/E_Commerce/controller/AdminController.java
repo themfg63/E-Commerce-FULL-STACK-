@@ -9,9 +9,10 @@ import com.TheMFG.E_Commerce.util.CommonUtil;
 import com.TheMFG.E_Commerce.util.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -42,18 +43,20 @@ public class AdminController {
     private OrderService orderService;
     @Autowired
     private CommonUtil commonUtil;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @ModelAttribute
-    public void getUserDetails(Principal p, Model m){
-        if (p != null){
-            String email = p.getName();
+    public void getUserDetails(Principal principal, Model model){
+        if(principal != null){
+            String email = principal.getName();
             User user = userService.getUserByEmail(email);
-            m.addAttribute("user",user);
+            model.addAttribute("user",user);
             Integer countCart = cartService.getCountCart(user.getId());
-            m.addAttribute("countCart",countCart);
+            model.addAttribute("countCart",countCart);
         }
         List<Category> allActiveCategory = categoryService.getAllActiveCategory();
-        m.addAttribute("category",allActiveCategory);
+        model.addAttribute("categorys",allActiveCategory);
     }
 
     @GetMapping("/")
@@ -69,45 +72,38 @@ public class AdminController {
     }
 
     @GetMapping("/category")
-    public String category(Model m,@RequestParam(name = "pageNo",defaultValue = "0") Integer pageNo,@RequestParam(name = "pageSize", defaultValue = "5")Integer pageSize){
+    public String category(Model model, @RequestParam(name = "pageNo",defaultValue = "0")Integer pageNo,@RequestParam(name = "pageSize",defaultValue = "5")Integer pageSize){
         Page<Category> page = categoryService.getAllCategoryPagination(pageNo,pageSize);
         List<Category> categorys = page.getContent();
-        m.addAttribute("categorys",categorys);
-        m.addAttribute("pageNo",page.getNumber());
-        m.addAttribute("pageSize",pageSize);
-        m.addAttribute("totalElements",page.getTotalElements());
-        m.addAttribute("totalPages",page.getTotalPages());
-        m.addAttribute("isFirst",page.isFirst());
-        m.addAttribute("isLast",page.isLast());
+        model.addAttribute("categorys",categorys);
+        model.addAttribute("pageNo",page.getNumber());
+        model.addAttribute("pageSize",pageSize);
+        model.addAttribute("totalElements",page.getTotalElements());
+        model.addAttribute("totalPages",page.getTotalPages());
+        model.addAttribute("isFirst",page.isFirst());
+        model.addAttribute("isLast",page.isLast());
 
         return "admin/category";
     }
 
     @PostMapping("/saveCategory")
-    public String saveCategory(@ModelAttribute Category category, @RequestParam("file")MultipartFile file, HttpSession session) throws IOException {
-
+    public String saveCategory(@ModelAttribute Category category, @RequestParam("file")MultipartFile file, HttpSession session) throws IOException{
         String imageName = file != null ? file.getOriginalFilename() : "default.jpg";
         category.setImageName(imageName);
 
         Boolean existCategory = categoryService.existCategory(category.getName());
 
         if(existCategory){
-            session.setAttribute("errorMsg","Kategori zaten mevcut");
+            session.setAttribute("errorMsg","Girilen Kategori Sistemde Mevcut!");
         }else{
             Category saveCategory = categoryService.saveCategory(category);
-
             if(ObjectUtils.isEmpty(saveCategory)){
-                session.setAttribute("errorMsg","Kategori kaydedilirken bir hata oluştu!");
+                session.setAttribute("errorMsg","Kategori Kaydedilirken Beklenmedik Birr Hata Oluştu!");
             }else{
                 File saveFile = new ClassPathResource("static/img").getFile();
-
                 Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "kategori" + File.separator + file.getOriginalFilename());
-
-                System.out.println(path);
                 Files.copy(file.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
-
-
-                session.setAttribute("succMsg","Kategori Kaydedildi!");
+                session.setAttribute("succMsg","Kategori Başarıyla Kaydedildi!");
             }
         }
         return "redirect:/admin/category";
@@ -116,24 +112,22 @@ public class AdminController {
     @GetMapping("/deleteCategory/{id}")
     public String deleteCategory(@PathVariable int id, HttpSession session){
         Boolean deleteCategory = categoryService.deleteCategory(id);
-
         if(deleteCategory){
-            session.setAttribute("succMsg","Kategori Silindi");
+            session.setAttribute("succMsg","Kategori Silindi!");
         }else{
-            session.setAttribute("errorMsg","Kategori silinirken bir hata oluştu");
+            session.setAttribute("errorMsg","Beklenmedik Bir Hata Oluştu!");
         }
-
         return "redirect:/admin/category";
     }
 
     @GetMapping("/loadEditCategory/{id}")
-    public String loadEditCategory(@PathVariable int id,Model m){
-        m.addAttribute("category",categoryService.getCategoryById(id));
+    public String loadEditCategory(@PathVariable int id,Model model){
+        model.addAttribute("category",categoryService.getCategoryById(id));
         return "admin/edit_category";
     }
 
     @PostMapping("/updateCategory")
-    public String updateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,HttpSession session) throws IOException{
+    public String updateCategory(@ModelAttribute Category category,@RequestParam("file")MultipartFile file,HttpSession session) throws IOException{
         Category oldCategory = categoryService.getCategoryById(category.getId());
         String imageName = file.isEmpty() ? oldCategory.getImageName() : file.getOriginalFilename();
 
@@ -149,21 +143,18 @@ public class AdminController {
             if(!file.isEmpty()){
                 File saveFile = new ClassPathResource("static/img").getFile();
                 Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "kategori" + File.separator + file.getOriginalFilename());
-                Files.copy(file.getInputStream(),path,StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
             }
-            session.setAttribute("succMsg","Kategori Güncellendi");
-        }else{
-            session.setAttribute("errorMsg","Beklenmedik bir hata oluştu");
+            session.setAttribute("succMsg","Kategori Başarıyla Güncellendi!");
+        }else {
+            session.setAttribute("errorMsg","Beklenmedik Bir Hata Oluştu!");
         }
-
-        return "redirect:/admin/loadEditCategory/"+category.getId() ;
+        return "redirect:/admin/loadEditCategory/" + category.getId();
     }
 
     @PostMapping("/saveProduct")
-    public String saveProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile image,HttpSession session) throws IOException{
-
+    public String saveProduct(@ModelAttribute Product product, @RequestParam("file")MultipartFile image, HttpSession session) throws IOException{
         String imageName = image.isEmpty() ? "default.jpg" : image.getOriginalFilename();
-
         product.setImage(imageName);
         product.setDiscount(0);
         product.setDiscountPrice(product.getPrice());
@@ -172,33 +163,28 @@ public class AdminController {
         if(!ObjectUtils.isEmpty(saveProduct)){
             File saveFile = new ClassPathResource("static/img").getFile();
             Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "ürünler" + File.separator + image.getOriginalFilename());
-            //System.out.println(path);
             Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-
-            session.setAttribute("succMsg","Ürün Kaydedildi");
+            session.setAttribute("succMsg","Ürün Başarıyla Kaydedildi!");
         }else{
-            session.setAttribute("errorMsg","Beklenmedik bir hata oluştu");
+            session.setAttribute("errorMsg","Beklenmedik Bir Hata Oluştu!");
         }
-
         return "redirect:/admin/loadAddProduct";
     }
 
     @GetMapping("/products")
-    public String loadViewProduct(Model m,@RequestParam(defaultValue = "")String ch, @RequestParam(name = "pageNo",defaultValue = "0")Integer pageNo, @RequestParam(name = "pageSize",defaultValue = "5")Integer pageSize){
+    public String loadViewProduct(Model model,@RequestParam(defaultValue = "")String ch,@RequestParam(name = "pageNo",defaultValue = "0")Integer pageNo,@RequestParam(name = "pageSize",defaultValue = "10")Integer pageSize){
         Page<Product> page = null;
         if(ch != null && ch.length() > 0){
             page = productService.searchProductPagination(pageNo,pageSize,ch);
         }else{
             page = productService.getAllProductsPagination(pageNo,pageSize);
         }
-
-        m.addAttribute("products", page.getContent());
-        m.addAttribute("pageNo",page.getNumber());
-        m.addAttribute("pageSize",pageSize);
-        m.addAttribute("totalElements",page.getTotalElements());
-        m.addAttribute("totalPages",page.getTotalPages());
-        m.addAttribute("isFirst",page.isFirst() );
-        m.addAttribute("isLast",page.isLast());
+        model.addAttribute("product",page.getContent());
+        model.addAttribute("pageSize",pageSize);
+        model.addAttribute("totalElements,", page.getTotalElements());
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("isFirst",page.isFirst());
+        model.addAttribute("isLast",page.isLast());
 
         return "admin/products";
     }
@@ -207,7 +193,7 @@ public class AdminController {
     public String deleteProduct(@PathVariable int id, HttpSession session){
         Boolean deleteProduct = productService.deleteProduct(id);
         if(deleteProduct){
-            session.setAttribute("succMsg","Ürün Silindi");
+            session.setAttribute("succMsg","Ürün Silindi!");
         }else{
             session.setAttribute("errorMsg","Beklenmedik Bir Hata Oluştu!");
         }
@@ -215,49 +201,53 @@ public class AdminController {
     }
 
     @GetMapping("/editProduct/{id}")
-    public String editProduct(@PathVariable int id, Model model){
+    public String editProduct(@PathVariable int id,Model model){
         model.addAttribute("product",productService.getProductById(id));
         model.addAttribute("categories",categoryService.getAllCategory());
         return "admin/edit_product";
     }
 
     @PostMapping("/updateProduct")
-    public String updateProduct(@ModelAttribute Product product,@RequestParam("file") MultipartFile image, HttpSession session,Model m){
-
+    public String updateProduct(@ModelAttribute Product product,@RequestParam("file")MultipartFile image, HttpSession session,Model model){
         if(product.getDiscount() < 0 || product.getDiscount() > 100){
-            session.setAttribute("errorMsg","Geçersiz İndirim Oranı!");
+            session.setAttribute("errorMsg","Geçersiz Değer");
         }else{
             Product updateProduct = productService.updateProduct(product,image);
-
             if(!ObjectUtils.isEmpty(updateProduct)){
-                session.setAttribute("succMsg","Ürün Kaydedildi");
-            }else{
-                session.setAttribute("errorMsg","Beklenmedik Bir Hata Oluştu");
+                session.setAttribute("succMsg","Ürün Başarıyla Güncellendi!");
+            }else {
+                session.setAttribute("errorMsg","Beklenmedik Bir Hata Oluştu!");
             }
         }
         return "redirect:/admin/editProduct/" + product.getId();
     }
 
     @GetMapping("/users")
-    public String getAllUsers(Model m){
-        List<User> users = userService.getUsers("ROLE_USER");
-        m.addAttribute("users",users);
+    public String getAllUsers(Model model, @RequestParam Integer type){
+        List<User> users = null;
+        if(type == 1){
+            users = userService.getUsers("ROLE_USER");
+        }else {
+            users = userService.getUsers("ROLE_ADMIN");
+        }
+        model.addAttribute("userType",type);
+        model.addAttribute("users",users);
         return "/admin/users";
     }
 
     @GetMapping("/updateSts")
-    public String updateUserAccountStatus(@RequestParam Boolean status, @RequestParam Integer id,HttpSession session){
+    public String updateUserAccountStatus(@RequestParam Boolean status, @RequestParam Integer id,@RequestParam Integer type, HttpSession session){
         Boolean f = userService.updateAccountStatus(id,status);
-        if(f){
-            session.setAttribute("succMsg","Hesap Aktiflik Durumu Güncellendi");
+        if (f) {
+            session.setAttribute("succMsg","Hesap Durumu Güncellendi");
         }else{
             session.setAttribute("errorMsg","Beklenmedik Bir Hata Oluştu!");
         }
-        return "redirect:/admin/users";
+        return "redirect:/admin/users?type="+type;
     }
 
     @GetMapping("/orders")
-    public String  getAllOrders(Model model,@RequestParam(name = "pageNo",defaultValue = "0")Integer pageNo,@RequestParam(value = "pageSize",defaultValue = "5")Integer pageSize){
+    public String getAllOrders(Model model,@RequestParam(name = "pageNo",defaultValue = "0")Integer pageNo, @RequestParam(name = "pageSize",defaultValue = "10")Integer pageSize){
         Page<ProductOrder> page = orderService.getAllOrdersPagination(pageNo,pageSize);
         model.addAttribute("orders",page.getContent());
         model.addAttribute("srch",false);
@@ -267,11 +257,10 @@ public class AdminController {
         model.addAttribute("totalPages",page.getTotalPages());
         model.addAttribute("isFirst",page.isFirst());
         model.addAttribute("isLast",page.isLast());
-
         return "/admin/orders";
     }
 
-    @PostMapping("/update-order-status")
+    @PostMapping("/update-orders-status")
     public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session){
         OrderStatus[] values = OrderStatus.values();
         String status = null;
@@ -291,33 +280,37 @@ public class AdminController {
         }
 
         if(!ObjectUtils.isEmpty(updateOrder)){
-            session.setAttribute("succMsg","Sipariş Durumu Güncellendi");
+            session.setAttribute("succMsg","Durum Güncellendi!");
         }else{
-            session.setAttribute("errorMsg","Sipariş Durumu Beklenmedik Bir Hata Yüzünden Güncellenemedi");
+            session.setAttribute("errorMsg", "Durum Güncellenemedi" );
         }
-
         return "redirect:/admin/orders";
     }
 
     @GetMapping("/search-order")
-    public String searchProduct(@RequestParam String orderId, Model model,HttpSession session,@RequestParam(name = "pageNo",defaultValue = "0")Integer pageNo,@RequestParam(name = "pageSize",defaultValue = "5")Integer pageSize){
+    public String searchProduct(@RequestParam String orderId, Model model, HttpSession session,
+                                @RequestParam(name = "pageNo",defaultValue = "0")Integer pageNo,
+                                @RequestParam(name = "pageSize", defaultValue = "10")Integer pageSize){
         if(orderId != null && orderId.length() > 0){
             ProductOrder order = orderService.getOrdersByOrderId(orderId.trim());
             if(ObjectUtils.isEmpty(order)){
-                session.setAttribute("errorMsg","Yanlış Sipariş ID");
+                session.setAttribute("errorMsg","Sipariş No Yanlış");
                 model.addAttribute("orderDtls",null);
             }else{
-                model.addAttribute("orderDtl",order);
+                model.addAttribute("orderDtls",order);
             }
             model.addAttribute("srch",true);
         }else{
+            List<ProductOrder> allOrders = orderService.getAllOrders();
+            model.addAttribute("orders",allOrders);
+            model.addAttribute("srch",false);
             Page<ProductOrder> page = orderService.getAllOrdersPagination(pageNo,pageSize);
             model.addAttribute("orders",page);
             model.addAttribute("srch",false);
             model.addAttribute("pageNo",page.getNumber());
             model.addAttribute("pageSize",pageSize);
-            model.addAttribute("totalElement",page.getTotalElements());
-            model.addAttribute("totalPages",page.getTotalPages());
+            model.addAttribute("totalElements",page.getTotalElements());
+            model.addAttribute("totalPages", page.getTotalPages());
             model.addAttribute("isFirst",page.isFirst());
             model.addAttribute("isLast",page.isLast());
         }
@@ -326,7 +319,7 @@ public class AdminController {
 
     @GetMapping("/add-admin")
     public String loadAdminAdd(){
-        return "/admin/add_admin";
+        return "/admin/add-admin";
     }
 
     @PostMapping("/save-admin")
@@ -336,16 +329,15 @@ public class AdminController {
         User saveUser = userService.saveAdmin(user);
 
         if(!ObjectUtils.isEmpty(saveUser)){
-            if(!file.isEmpty()){
+            if (!file.isEmpty()){
                 File saveFile = new ClassPathResource("static/img").getFile();
                 Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profil" + File.separator + file.getOriginalFilename());
                 Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
             }
-            session.setAttribute("succMsg", "Kayıt Başarıyla Oluşturuldu");
+            session.setAttribute("succMsg","Admin Kaydı Başarıyla Oluşturuldu");
         }else{
-            session.setAttribute("errorMsg", "Beklenmedik Bir Hata Oluştu");
+            session.setAttribute("errorMsg","Beklenmedik Bir Hata Oluştu!");
         }
-
         return "redirect:/admin/add-admin";
     }
 }
