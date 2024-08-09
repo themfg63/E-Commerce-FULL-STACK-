@@ -82,7 +82,12 @@
                                 [[${user.name}]]
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/user/profile">Profil</a> </li>
+                                <li th:if="${user.role=='ROLE_USER'}">
+                                    <a class="dropdown-item" href="/user/profile">Profilim</a>
+                                </li>
+                                <li th:if="${user.role=='ROLE_ADMIN'}">
+                                    <a class="dropdown-item" href="/admin/profile">Profilim</a>
+                                </li>
                                 <th:block th:if="${user.role=='ROLE_ADMIN'}">
                                     <li><a class="dropdown-item" href="/admin/">İşlemler</a> </li>
                                 </th:block>

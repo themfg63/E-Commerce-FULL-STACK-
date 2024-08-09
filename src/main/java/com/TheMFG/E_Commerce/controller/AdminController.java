@@ -319,7 +319,7 @@ public class AdminController {
 
     @GetMapping("/add-admin")
     public String loadAdminAdd(){
-        return "/admin/add-admin";
+        return "/admin/add_admin";
     }
 
     @PostMapping("/save-admin")
@@ -339,5 +339,40 @@ public class AdminController {
             session.setAttribute("errorMsg","Beklenmedik Bir Hata Oluştu!");
         }
         return "redirect:/admin/add-admin";
+    }
+
+    @GetMapping("/profile")
+    public String profile(){
+        return "/admin/profile";
+    }
+
+    @PostMapping("/update-profile")
+    public String updateProfile(@ModelAttribute User user,@RequestParam MultipartFile img, HttpSession session){
+        User updateUserProfile = userService.updateUserProfile(user,img);
+        if(ObjectUtils.isEmpty(updateUserProfile)){
+            session.setAttribute("errorMsg","Profil Bulunamadı!");
+        }else {
+            session.setAttribute("succMsg","Profil Güncellendi");
+        }
+        return "redirect:/admin/profile";
+    }
+
+    @PostMapping("/change-password")
+    public String changePassword(@RequestParam String newPassword,@RequestParam String currentPassword, Principal principal, HttpSession session){
+        User loggedInUserDetails = commonUtil.getLoggedInUserDetails(principal);
+        boolean matches = passwordEncoder.matches(currentPassword, loggedInUserDetails.getPassword());
+        if(matches){
+            String encodePassword = passwordEncoder.encode(newPassword);
+            loggedInUserDetails.setPassword(encodePassword);
+            User updateUser = userService.updateUser(loggedInUserDetails);
+            if(ObjectUtils.isEmpty(updateUser)){
+                session.setAttribute("errorMsg","Şifre Güncellenemedi! Beklenmedik Bir Hata Oluştu");
+            }else {
+                session.setAttribute("succMsg","Şifre Güncellendi!");
+            }
+        }else{
+            session.setAttribute("errorMsg","Şifre Doğru Değil");
+        }
+        return "redirect:/admin/profile";
     }
 }

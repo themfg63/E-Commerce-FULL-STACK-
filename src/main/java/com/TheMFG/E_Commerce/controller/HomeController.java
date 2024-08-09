@@ -179,7 +179,7 @@ public class HomeController {
             userByToken.setPassword(passwordEncoder.encode(password));
             userByToken.setResetToken(null);
             userService.updateUser(userByToken);
-          //  session.setAttribute("succMsg","Şifreniz başarıyla güncellendi");
+            //  session.setAttribute("succMsg","Şifreniz başarıyla güncellendi");
             model.addAttribute("msg","Şifreniz başarıyla güncellendi");
             return "message";
         }
