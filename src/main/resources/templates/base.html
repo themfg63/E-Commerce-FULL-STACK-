@@ -60,7 +60,7 @@
                         Kategoriler
                     </a>
                     <ul class="dropdown-menu">
-                        <li th:each="c:${categorys}">
+                        <li th:each="c:${category}">
                             <a class="dropdown-item" th:href="@{'/products?category='+${c.name}}">
                                 [[${c.name}]]
                             </a>

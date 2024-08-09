@@ -6,15 +6,15 @@
 </head>
 <body>
 <section>
-    <div class="container mt-5 p-5">
+    <div class="container-fluid mt-5 p-5">
         <div class="card card-sh">
             <div class="card-header text-center">
-                <p class="fs-4">Kullanıcıları Görüntüle</p>
+                <p class="fs-4" th:if="${userType==1}">Kullanıcılar</p>
+                <p class="fs-4" th:if="${userType==2}">Adminler</p>
                 <th:block th:if="${session.succMsg}">
                     <p class="text-success fw-bold">[[${session.succMsg}]]</p>
                     <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
                 </th:block>
-
                 <th:block th:if="${session.errorMsg}">
                     <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
                     <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
@@ -25,31 +25,31 @@
                     <thead>
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">Profil</th>
+                        <th scope="col">Profil Fotoğrafı</th>
                         <th scope="col">Ad Soyad</th>
                         <th scope="col">Email</th>
-                        <th scope="col">Telefon Numarası</th>
+                        <th scope="col">Telefon No</th>
                         <th scope="col">Adres</th>
                         <th scope="col">Durum</th>
                         <th scope="col">İşlem</th>
                     </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="u,c:${users}">
-                            <th scope="row">[[${c.count}]]</th>
-                            <td>
-                                <img th:src="@{'/img/profil/'+${u.profilImage}}" width="70px" height="70px">
-                            </td>
-                            <td>[[${u.name}]]</td>
-                            <td>[[${u.email}]]</td>
-                            <td>[[${u.mobileNumber}]]</td>
-                            <td>[[${u.address + ',' + u.city + ',' + u.state + ',' + u.pincode}]]</td>
-                            <td>[[${u.isEnable}]]</td>
-                            <td>
-                                <a th:href="@{'/admin/updateSts?status=true&id='+${u.id}}" class="btn btn-sm btn-primary">Aktif</a>
-                                <a th:href="@{'/admin/updateSts?status=false&id='+${u.id}}" class="btn btn-sm btn-danger">İnaktif</a>
-                            </td>
-                        </tr>
+                    <tr th:each="u,c:${users}">
+                        <th scope="row">[[${c.count}]]</th>
+                        <td>
+                            <img th:src="@{'/img/profil/'+${u.profilImage}}" width="70px" height="70px">
+                        </td>
+                        <td>[[${u.name}]]</td>
+                        <td>[[${u.email}]]</td>
+                        <td>[[${u.mobileNumber}]]</td>
+                        <td>[[${u.address+','+u.city+','+u.state+','+u.pincode}]]</td>
+                        <td>[[${u.isEnable}]]</td>
+                        <td>
+                            <a th:href="@{'/admin/updateSts?status=true&id='+${u.id}}+'&type='+${userType}" class="btn btn-sm btn-primary">Aktif</a>
+                            <a th:href="@{'/admin/updateSts?status=false&id='+${u.id}}+'&type='+${userType}" class="btn btn-sm btn-danger">İnaktif</a>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
