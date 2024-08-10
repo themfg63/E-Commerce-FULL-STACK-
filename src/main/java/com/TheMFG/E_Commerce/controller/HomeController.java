@@ -103,14 +103,14 @@ public class HomeController {
         return "product";
     }
     @GetMapping("/product/{id}")
-    public String product(@PathVariable int id,Model model){
+    public String product(@PathVariable int id, Model model){
         Product productById = productService.getProductById(id);
         model.addAttribute("product",productById);
         return "view_product";
     }
 
     @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute User user, @RequestParam("img")MultipartFile file, HttpSession session) throws IOException{
+    public String saveUser(@ModelAttribute User user, @RequestParam("img") MultipartFile file, HttpSession session) throws IOException {
         String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
         user.setProfilImage(imageName);
         User saveUser = userService.saveUser(user);
@@ -194,5 +194,3 @@ public class HomeController {
         return "product";
     }
 }
-
-

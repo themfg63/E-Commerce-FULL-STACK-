@@ -12,7 +12,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,7 +24,6 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -35,10 +33,11 @@ public class UserServiceImpl implements UserService {
         user.setIsEnable(true);
         user.setAccountNonLocked(true);
         user.setFailedAttempt(0);
+
         String encodePassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodePassword);
         User saveUser = userRepository.save(user);
-        return saveUser;
+        return  saveUser;
     }
 
     @Override
@@ -54,7 +53,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public Boolean updateAccountStatus(Integer id,Boolean status){
         Optional<User> findByUser = userRepository.findById(id);
-
         if(findByUser.isPresent()){
             User user = findByUser.get();
             user.setIsEnable(status);
@@ -80,11 +78,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean unlockAccountTimeExpired(User user){
-        long locktTime = user.getLockTime().getTime();
-        long unlockTime = locktTime + AppConstant.UNLOCK_DURATION_TIME;
+        long lockTime = user.getLockTime().getTime();
+        long unLockTime = lockTime + AppConstant.UNLOCK_DURATION_TIME;
         long currentTime = System.currentTimeMillis();
-
-        if(unlockTime < currentTime){
+        if(unLockTime < currentTime){
             user.setAccountNonLocked(true);
             user.setFailedAttempt(0);
             user.setLockTime(null);
@@ -95,35 +92,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resetAttempt(int userId) {
-
-    }
+    public void resetAttempt(int userId){}
 
     @Override
-    public void updateUserResetToken(String email, String resetToken) {
+    public void updateUserResetToken(String email,String resetToken){
         User findByEmail = userRepository.findByEmail(email);
         findByEmail.setResetToken(resetToken);
         userRepository.save(findByEmail);
     }
 
     @Override
-    public User getUserByToken(String token) {
+    public User getUserByToken(String token){
         return userRepository.findByResetToken(token);
     }
 
     @Override
-    public User updateUser(User user) {
+    public User updateUser(User user){
         return userRepository.save(user);
     }
 
     @Override
-    public User updateUserProfile(User user, MultipartFile img)  {
+    public User updateUserProfile(User user,MultipartFile img){
         User dbUser = userRepository.findById(user.getId()).get();
-
         if(!img.isEmpty()){
             dbUser.setProfilImage(img.getOriginalFilename());
         }
-
         if(!ObjectUtils.isEmpty(dbUser)){
             dbUser.setName(user.getName());
             dbUser.setMobileNumber(user.getMobileNumber());
@@ -142,7 +135,6 @@ public class UserServiceImpl implements UserService {
         }catch (Exception e){
             e.printStackTrace();
         }
-
         return dbUser;
     }
 
