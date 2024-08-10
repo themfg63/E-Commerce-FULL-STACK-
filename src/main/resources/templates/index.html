@@ -31,51 +31,11 @@
       <div class="container">
           <div class="row">
               <p class="text-center fs-4">Kategoriler</p>
-              <div class="col-md-2">
-                  <div class="card rounded-rectangle shadow-sm p-3 mb-5 bg-body-tertiary rounded">
+              <div class="col-md-2" th:each="c:${category}">
+                  <div class="card rounded-circle shadow-sm p-3 mb-5 bg-body-tertiary rounded">
                       <div class="card-body text-center">
-                          <img src="img/kategori/kategori1.webp" width="100%" height="160px">
-                          <p>Elektronik</p>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-md-2">
-                  <div class="card rounded-rectangle shadow-sm p-3 mb-5 bg-body-tertiary rounded">
-                      <div class="card-body text-center">
-                          <img src="img/kategori/kategori2.png" width="100%" height="160px">
-                          <p>Moda</p>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-md-2">
-                  <div class="card rounded-rectangle shadow-sm p-3 mb-5 bg-body-tertiary rounded">
-                      <div class="card-body text-center">
-                          <img src="img/kategori/kategori3.jpg" width="100%" height="160px">
-                          <p>Market</p>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-md-2">
-                  <div class="card rounded-rectangle shadow-sm p-3 mb-5 bg-body-tertiary rounded">
-                      <div class="card-body text-center">
-                          <img src="img/kategori/kategori4.jpg" width="100%" height="160px">
-                          <p>Ev, Yaşam</p>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-md-2">
-                  <div class="card rounded-rectangle shadow-sm p-3 mb-5 bg-body-tertiary rounded">
-                      <div class="card-body text-center">
-                          <img src="img/kategori/kategori5.jpeg" width="100%" height="160px">
-                          <p>Spor, Outdoor</p>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-md-2">
-                  <div class="card rounded-rectangle shadow-sm p-3 mb-5 bg-body-tertiary rounded">
-                      <div class="card-body text-center">
-                          <img src="img/kategori/kategori6.jpeg" width="100%" height="135px">
-                          <p>Kozmetik, Kişisel Bakım</p>
+                          <img th:src="@{'img/kategori/'+${c.imageName}}" width="65%" height="140px">
+                          <p>[[${c.name}]]</p>
                       </div>
                   </div>
               </div>
@@ -85,35 +45,11 @@
       <div class="container-fluid bg-light p-3">
           <div class="row">
               <p class="text-center fs-4">Son Eklenen Ürünler</p>
-              <div class="col-md-3">
-                  <div class="card">
+              <div class="col-md-3" th:each="p:${products}">
+                  <div class="card shadow-sm p-3 mb-5 bg-body-tertiary rounded">
                       <div class="card-body text-center">
-                          <img alt="" src="img/ürünler/ürün1.jpeg" class="" width="65%" height="140px">
-                          <p class="text-center">HP Laptop</p>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-md-3">
-                  <div class="card">
-                      <div class="card-body text-center">
-                          <img alt="" src="img/ürünler/ürün2.jpeg" class="" width="65%" height="140px">
-                          <p class="text-center">İphone 15</p>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-md-3">
-                  <div class="card">
-                      <div class="card-body text-center">
-                          <img alt="" src="img/ürünler/ürün3.jpg" class="" width="65%" height="140px">
-                          <p class="text-center">Dyson Saç Düzleştirici</p>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-md-3">
-                  <div class="card">
-                      <div class="card-body text-center">
-                          <img alt="" src="img/ürünler/ürün4.webp" class="" width="65%" height="140px">
-                          <p class="text-center">Samsung Galaxy Z Flip4</p>
+                          <img alt="" th:src="@{'img/ürünler/'+${p.image}}" class="" width="65%" height="140px">
+                          <p class="text-center">[[${p.title}]]</p>
                       </div>
                   </div>
               </div>

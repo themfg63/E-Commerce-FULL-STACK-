@@ -28,7 +28,7 @@
                     <div class="card-body">
                         <div class="list-group">
                             <p class="fs-4">Kategoriler</p>
-                            <a href="/products"  class="list-group-item list-group-item-action " th:classappend="${paramValue == ''} ? 'active':''" aria-current="true">
+                            <a href="/products"  class="list-group-item list-group-item-action" th:classappend="${paramValue == ''} ? 'active':''" aria-current="true">
                                 Tümü
                             </a>
                             <a th:href="@{'/products?category='+${c.name}}" th:classappend="${paramValue == c.name} ? 'active':''"

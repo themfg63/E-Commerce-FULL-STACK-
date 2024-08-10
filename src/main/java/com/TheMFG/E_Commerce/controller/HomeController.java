@@ -36,19 +36,14 @@ import java.util.UUID;
 public class HomeController {
     @Autowired
     private CategoryService categoryService;
-
     @Autowired
     private ProductService productService;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private CommonUtil commonUtil;
-
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-
     @Autowired
     private CartService cartService;
 
@@ -67,7 +62,19 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String index(){
+    public String index(Model model){
+        List<Category> allActiveCategory = categoryService.getAllActiveCategory()
+                .stream()
+                .sorted((c1,c2)->c2.getId().compareTo(c1.getId()))
+                .limit(6)
+                .toList();
+        List<Product> allActiveProducts = productService.getAllActiveProducts("")
+                .stream()
+                .sorted((p1,p2) -> p2.getId().compareTo(p1.getId()))
+                .limit(8)
+                .toList();
+        model.addAttribute("category",allActiveCategory);
+        model.addAttribute("products",allActiveProducts);
         return "index";
     }
 
