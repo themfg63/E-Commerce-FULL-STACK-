@@ -20,4 +20,5 @@ public interface UserService {
     public User updateUser(User user);
     public User updateUserProfile(User user, MultipartFile img);
     public User saveAdmin(User user);
+    public Boolean existsEmail(String email);
 }

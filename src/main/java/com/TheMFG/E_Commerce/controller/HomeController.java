@@ -117,23 +117,28 @@ public class HomeController {
     }
 
     @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute User user, @RequestParam("img") MultipartFile file, HttpSession session) throws IOException {
-        String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
-        user.setProfilImage(imageName);
-        User saveUser = userService.saveUser(user);
+    public String saveUser(@ModelAttribute User user, @RequestParam("img")MultipartFile file, HttpSession session) throws IOException{
+       Boolean existsEmail = userService.existsEmail(user.getEmail());
 
-        if(!ObjectUtils.isEmpty(saveUser)){
-            if(!file.isEmpty()){
-                File saveFile = new ClassPathResource("static/img").getFile();
-                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profil" + File.separator + file.getOriginalFilename());
-                System.out.println(path);
-                Files.copy(file.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
-            }
-            session.setAttribute("succMsg","Kullanıcı Oluşturuldu!");
-        }else{
-            session.setAttribute("errorMsg","Beklenmedik Bir hata oluştu");
-        }
-        return "redirect:/register";
+       if(existsEmail){
+           session.setAttribute("errorMsg","Girilen Email Zaten Kullanılıyor");
+       }else {
+           String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
+           user.setProfilImage(imageName);
+           User saveUser = userService.saveUser(user);
+
+           if(!ObjectUtils.isEmpty(saveUser)){
+               if(!file.isEmpty()){
+                   File saveFile = new ClassPathResource("static/img").getFile();
+                   Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profil" + File.separator + file.getOriginalFilename());
+                   Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+               }
+               session.setAttribute("succMsg","Kayıt Başarıyla Oluşturuldu");
+           }else{
+               session.setAttribute("errorMsg","Beklenmedik Bir Hata Oluştu");
+           }
+       }
+       return "redirect:/register";
     }
 
     @GetMapping("/forgot-password")
